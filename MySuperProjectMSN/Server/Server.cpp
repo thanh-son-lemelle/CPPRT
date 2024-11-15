@@ -44,7 +44,6 @@ void Server::onReadyRead() {
     }
     QByteArray data = clientSocket->readAll();
     qDebug() << "Données reçues du client:" << data;
-    // Diffusez les données à tous les clients connectés
     for (QTcpSocket *socket : clients) {
         if (socket != clientSocket) {
             socket->write(data);

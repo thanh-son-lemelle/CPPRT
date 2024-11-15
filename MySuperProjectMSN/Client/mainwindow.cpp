@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     socket = new QTcpSocket(this);
 
-    // Connectez-vous au serveur au démarrage
     socket->connectToHost("127.0.0.1", 1234);
 
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
