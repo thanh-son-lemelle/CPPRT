@@ -10,11 +10,16 @@ CONFIG += c++17
 TEMPLATE = app
 TARGET = Client
 
+RESOURCES += \
+    ressources.qrc \
+
 SOURCES += \
+    src/ChatInterface.cpp \
     main.cpp \
     mainwindow.cpp \
 
 HEADERS += \
+    header/ChatInterface.h \
     mainwindow.h \
 
 FORMS += \

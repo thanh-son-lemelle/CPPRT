@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/client">
+        <file>Client/assets/img/addFriend.png</file>
+        <file>Client/assets/img/arrowDown.png</file>
+        <file>Client/assets/img/arrowEnter.png</file>
+        <file>Client/assets/img/arrowRight.png</file>
+        <file>Client/assets/img/arrowUp.png</file>
+        <file>Client/assets/img/butterfly.png</file>
+        <file>Client/assets/img/butterflyLogo.png</file>
+        <file>Client/assets/img/camera.png</file>
+        <file>Client/assets/img/download.png</file>
+        <file>Client/assets/img/emojiSmiley.png</file>
+        <file>Client/assets/img/eye.png</file>
+        <file>Client/assets/img/facebook.png</file>
+        <file>Client/assets/img/instagram.png</file>
+        <file>Client/assets/img/linkedin.png</file>
+        <file>Client/assets/img/loading.png</file>
+        <file>Client/assets/img/logOutUser.png</file>
+        <file>Client/assets/img/microphone.png</file>
+        <file>Client/assets/img/notificationUser.png</file>
+        <file>Client/assets/img/profileLogo.png</file>
+        <file>Client/assets/img/profileUser.png</file>
+        <file>Client/assets/img/search.png</file>
+        <file>Client/assets/img/settingsUser.png</file>
+        <file>Client/assets/img/textStyle.png</file>
+        <file>Client/assets/img/whiteCircle.png</file>
+        <file>Client/assets/img/wizzLogo.png</file>
+    </qresource>
+</RCC>
