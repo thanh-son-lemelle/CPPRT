@@ -1,52 +1,46 @@
-#include "Server.h"
+#include "server.h"
 #include <QDebug>
 
 Server::Server(QObject *parent) : QTcpServer(parent) {
-    connect(this, &QTcpServer::newConnection, this, &Server::onNewConnection);
-    qDebug() << "Serveur initialisé.";
+    qDebug() << "Server initialized.";
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {
-    qDebug() << "Connexion entrante avec descripteur:" << socketDescriptor;
+    qDebug() << "Incoming connection with descriptor:" << socketDescriptor;
     QTcpSocket *clientSocket = new QTcpSocket(this);
     if (clientSocket->setSocketDescriptor(socketDescriptor)) {
         clients.append(clientSocket);
         connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
-        qDebug() << "Client connecté avec succès.";
+        connect(clientSocket, &QTcpSocket::disconnected, this, &Server::onClientDisconnected);
+        qDebug() << "Client connected successfully.";
     } else {
-        qDebug() << "Échec de la configuration du descripteur du socket.";
+        qDebug() << "Failed to set socket descriptor.";
         delete clientSocket;
     }
 }
 
-void Server::onNewConnection() {
-    QTcpSocket *clientSocket = nextPendingConnection();
-    if (clientSocket) {
-        clients.append(clientSocket);
-        connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
-        connect(clientSocket, &QTcpSocket::disconnected, this, [this, clientSocket]() {
-            clients.removeAll(clientSocket);
-            clientSocket->deleteLater();
-            qDebug() << "Client déconnecté.";
-        });
-        qDebug() << "Nouvelle connexion établie.";
-    } else {
-        qDebug() << "Failed to get new connection socket.";
-    }
-}
-
-
 void Server::onReadyRead() {
     QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
     if (!clientSocket) {
-        qDebug() << "Client socket invalide dans onReadyRead.";
+        qDebug() << "Invalid client socket in onReadyRead.";
         return;
     }
     QByteArray data = clientSocket->readAll();
-    qDebug() << "Données reçues du client:" << data;
+    qDebug() << "Data received from client:" << data;
     for (QTcpSocket *socket : clients) {
         if (socket != clientSocket) {
             socket->write(data);
         }
+    }
+}
+
+void Server::onClientDisconnected() {
+    QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
+    if (clientSocket) {
+        clients.removeAll(clientSocket);
+        clientSocket->deleteLater();
+        qDebug() << "Client disconnected.";
+    } else {
+        qDebug() << "Error: Disconnected signal from an invalid socket.";
     }
 }

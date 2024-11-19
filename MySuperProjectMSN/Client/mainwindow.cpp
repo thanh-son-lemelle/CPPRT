@@ -1,4 +1,5 @@
 #include <QTcpSocket>
+#include <QCloseEvent>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -13,11 +14,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
     connect(socket, &QTcpSocket::readyRead, this, &MainWindow::onReadyRead);
+    connect(socket, &QTcpSocket::disconnected, this, &MainWindow::onDisconnected);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    if(socket->state() == QAbstractSocket::ConnectedState) {
+        qDebug() << "initialize disconnection";
+        socket->disconnectFromHost();
+        QMetaObject::invokeMethod(this, [this]() {
+            if(socket->state() != QAbstractSocket::UnconnectedState) {
+                socket->waitForDisconnected();
+                qDebug() << "Waiting for disconnection";
+            }
+            }, Qt::QueuedConnection);
+    }
+    event->accept();
+    qDebug() <<"Disconnected";
+}
+
+void MainWindow::onDisconnected() {
+    qDebug() << "Socket disconnected";
 }
 
 void MainWindow::onSendButtonClicked() {

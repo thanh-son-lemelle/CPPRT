@@ -18,9 +18,13 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void onSendButtonClicked();
     void onReadyRead();
+    void onDisconnected();
 
 private:
     Ui::MainWindow *ui;

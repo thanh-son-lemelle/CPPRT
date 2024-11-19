@@ -15,9 +15,8 @@ protected:
     void incomingConnection(qintptr socketDescriptor) override;
 
 private slots:
-    void onNewConnection();
     void onReadyRead();
-
+    void onClientDisconnected();
 private:
     QList<QTcpSocket*> clients;
 };
