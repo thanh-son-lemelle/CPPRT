@@ -8,16 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Connect UI events
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
-
-    // Connect ClientSocket signals to UI slots
     connect(clientSocket, &ClientSocket::messageReceived, this, &MainWindow::onMessageReceived);
     connect(clientSocket, &ClientSocket::connectionEstablished, this, &MainWindow::onConnectionEstablished);
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
 
-    // Connect to server
     clientSocket->connectToServer("127.0.0.1", 1234);
 }
 
