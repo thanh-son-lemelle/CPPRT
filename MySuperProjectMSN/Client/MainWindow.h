@@ -2,9 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTcpSocket>
-#include <QTimer>
-#include <QLabel>
+#include "ClientSocket.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,24 +18,16 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-protected:
-    void closeEvent(QCloseEvent *event) override;
-
 private slots:
     void onSendButtonClicked();
-    void onReadyRead();
-    void onDisconnected();
-    void onErrorOccurred(QAbstractSocket::SocketError socketError);
-    void attemptReconnect();
-
+    void onMessageReceived(const QString &message);
+    void onConnectionEstablished();
+    void onConnectionClosed();
+    void onErrorOccurred(const QString &error);
 
 private:
     Ui::MainWindow *ui;
-    QTcpSocket *socket;
-    QTimer *reconnectTimer;
-    int reconnectInterval =6000; // this is ms
-    QLabel *statusLabel;
-    void setupStatusBar();
+    ClientSocket *clientSocket;
 };
 
 #endif // MAINWINDOW_H
