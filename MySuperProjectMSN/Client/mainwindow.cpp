@@ -15,6 +15,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
 
     clientSocket->connectToServer("127.0.0.1", 1234);
+
+    QLabel *messageLabel1 = new QLabel("TEST");
+    ui->ConversationFrameLayout->addWidget(messageLabel1);
+
+
+    QLabel *messageLabel2 = new QLabel("TEST2");
+    ui->ConversationFrameLayout->addWidget(messageLabel2);
+    ui->ConversationFrameLayout->setAlignment(Qt::AlignBottom);
 }
 
 MainWindow::~MainWindow() {
@@ -26,18 +34,23 @@ void MainWindow::onSendButtonClicked() {
     ui->messageLineEdit->clear();
 }
 
+
 void MainWindow::onMessageReceived(const QString &message) {
-    ui->chatTextEdit->append(message);
+    QLabel *messageLabel = new QLabel(message);
+    ui->ConversationFrameLayout->addWidget(messageLabel);
 }
 
 void MainWindow::onConnectionEstablished() {
-    ui->statusbar->showMessage("Connected to server.");
+    qDebug()<< "Connected to server.";
+    // ui->statusbar->showMessage("Connected to server.");
 }
 
 void MainWindow::onConnectionClosed() {
-    ui->statusbar->showMessage("Disconnected from server.");
+    qDebug()<< "DisConnected from server.";
+    // ui->statusbar->showMessage("Disconnected from server.");
 }
 
 void MainWindow::onErrorOccurred(const QString &error) {
-    ui->statusbar->showMessage("Error: " + error);
+    qDebug()<< "Error: " << error;
+    // ui->statusbar->showMessage("Error: " + error);
 }

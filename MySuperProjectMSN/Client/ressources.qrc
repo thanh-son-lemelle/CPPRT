@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/client">
+        <file>assets/img/addFriend.png</file>
+        <file>assets/img/arrowDown.png</file>
+        <file>assets/img/arrowEnter.png</file>
+        <file>assets/img/arrowRight.png</file>
+        <file>assets/img/arrowUp.png</file>
+        <file>assets/img/butterfly.png</file>
+        <file>assets/img/butterflyLogo.png</file>
+        <file>assets/img/camera.png</file>
+        <file>assets/img/download.png</file>
+        <file>assets/img/emojiSmiley.png</file>
+        <file>assets/img/eye.png</file>
+        <file>assets/img/facebook.png</file>
+        <file>assets/img/instagram.png</file>
+        <file>assets/img/linkedin.png</file>
+        <file>assets/img/loading.png</file>
+        <file>assets/img/logOutUser.png</file>
+        <file>assets/img/microphone.png</file>
+        <file>assets/img/notificationUser.png</file>
+        <file>assets/img/profileLogo.png</file>
+        <file>assets/img/profileUser.png</file>
+        <file>assets/img/search.png</file>
+        <file>assets/img/settingsUser.png</file>
+        <file>assets/img/textStyle.png</file>
+        <file>assets/img/whiteCircle.png</file>
+        <file>assets/img/wizzLogo.png</file>
+    </qresource>
+</RCC>
