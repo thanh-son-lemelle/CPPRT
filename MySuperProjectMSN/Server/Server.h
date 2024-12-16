@@ -18,10 +18,10 @@ protected:
 private slots:
     void onReadyRead();
     void onClientDisconnected();
-    void relayMessage(const QString &message, QTcpSocket *sender);
 private:
     QList<QTcpSocket*> clients;
     QQueue<QString> messageQueue;
+    void relayMessage(const QString &message, QTcpSocket *sender);
 };
 
 #endif // SERVEUR_H
