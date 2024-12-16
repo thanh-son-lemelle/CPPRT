@@ -14,12 +14,14 @@ RESOURCES += \
     ressources.qrc \
 
 SOURCES += \
+    src/Client.cpp \
     src/ChatInterface.cpp \
     main.cpp \
     mainwindow.cpp \
 
 HEADERS += \
     header/ChatInterface.h \
+    header/Client.h \
     mainwindow.h \
 
 FORMS += \

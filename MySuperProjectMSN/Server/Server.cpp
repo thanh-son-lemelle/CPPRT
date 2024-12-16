@@ -1,52 +1,53 @@
 #include "Server.h"
 #include <QDebug>
 
-Server::Server(QObject *parent) : QTcpServer(parent) {
-    connect(this, &QTcpServer::newConnection, this, &Server::onNewConnection);
-    qDebug() << "Serveur initialisé.";
-}
+// Constructor to initialize server and start listening for connections
+Server::Server(QObject *parent) : QObject(parent)
+{
+    server = new QTcpServer(this);
 
-void Server::incomingConnection(qintptr socketDescriptor) {
-    qDebug() << "Connexion entrante avec descripteur:" << socketDescriptor;
-    QTcpSocket *clientSocket = new QTcpSocket(this);
-    if (clientSocket->setSocketDescriptor(socketDescriptor)) {
-        clients.append(clientSocket);
-        connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
-        qDebug() << "Client connecté avec succès.";
+    connect(server, &QTcpServer::newConnection, this, &Server::onNewConnection);
+
+    if (!server->listen(QHostAddress::Any, 2512)) {
+        qCritical() << "Server could not start!";
     } else {
-        qDebug() << "Échec de la configuration du descripteur du socket.";
-        delete clientSocket;
+        qDebug() << "Server started, waiting for connections...";
     }
 }
 
-void Server::onNewConnection() {
-    QTcpSocket *clientSocket = nextPendingConnection();
+// Slot to handle new client connections
+void Server::onNewConnection()
+{
+    QTcpSocket *clientSocket = server->nextPendingConnection();
+    clients << clientSocket;
+
+    connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
+    connect(clientSocket, &QTcpSocket::disconnected, this, &Server::onClientDisconnected);
+
+    qDebug() << "Client connected!";
+}
+
+// Slot to handle incoming messages from clients
+void Server::onReadyRead()
+{
+    QTcpSocket *clientSocket = qobject_cast<QTcpSocket *>(sender());
     if (clientSocket) {
-        clients.append(clientSocket);
-        connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
-        connect(clientSocket, &QTcpSocket::disconnected, this, [this, clientSocket]() {
-            clients.removeAll(clientSocket);
-            clientSocket->deleteLater();
-            qDebug() << "Client déconnecté.";
-        });
-        qDebug() << "Nouvelle connexion établie.";
-    } else {
-        qDebug() << "Failed to get new connection socket.";
+        QByteArray message = clientSocket->readAll();
+        qDebug() << message;
+
+        for (QTcpSocket *client : clients) {
+            client->write(message);
+        }
     }
 }
 
-
-void Server::onReadyRead() {
-    QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
-    if (!clientSocket) {
-        qDebug() << "Client socket invalide dans onReadyRead.";
-        return;
-    }
-    QByteArray data = clientSocket->readAll();
-    qDebug() << "Données reçues du client:" << data;
-    for (QTcpSocket *socket : clients) {
-        if (socket != clientSocket) {
-            socket->write(data);
-        }
+// Slot to handle client disconnection
+void Server::onClientDisconnected()
+{
+    QTcpSocket *clientSocket = qobject_cast<QTcpSocket *>(sender());
+    if (clientSocket) {
+        clients.removeAll(clientSocket);
+        clientSocket->deleteLater();
+        qDebug() << "Client disconnected!";
     }
 }

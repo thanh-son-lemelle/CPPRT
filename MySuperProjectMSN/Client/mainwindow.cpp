@@ -3,16 +3,19 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , client(new Client(this))
 {
     ui->setupUi(this);
-    socket = new QTcpSocket(this);
 
-    socket->connectToHost("127.0.0.1", 1234);
+    connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::sendMessage);
+    connect(ui->messageLineEdit, &QLineEdit::returnPressed, this, &MainWindow::sendMessage);
+    connect(client, &Client::messageReceived, this, &MainWindow::displayMessage);
 
-    connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
-    connect(socket, &QTcpSocket::readyRead, this, &MainWindow::onReadyRead);
+    ConversationFrameLayout = ui->ConversationFrameLayout;
+    messageLineEdit = ui->messageLineEdit;
+    sendButton = ui->sendButton;
 }
 
 MainWindow::~MainWindow()
@@ -30,5 +33,27 @@ void MainWindow::onSendButtonClicked() {
 
 void MainWindow::onReadyRead() {
     QByteArray data = socket->readAll();
-    ui->chatTextEdit->append(QString::fromUtf8(data));
 }
+
+void MainWindow::sendMessage()
+{
+    QString message = messageLineEdit->text();
+    if (!message.isEmpty()) {
+        messageLineEdit->clear();
+        client->sendMessage(message);
+    }
+}
+
+void MainWindow::displayMessage(const QString &message) {
+    // Créer une nouvelle étiquette pour le message
+    QLabel *messageLabel = new QLabel(message);
+
+    // Ajouter l'étiquette dans le layout
+    ConversationFrameLayout->addWidget(messageLabel);
+
+    // Pousser les éléments vers le bas pour imiter une conversation de chat
+    ConversationFrameLayout->setAlignment(Qt::AlignBottom);
+
+
+}
+

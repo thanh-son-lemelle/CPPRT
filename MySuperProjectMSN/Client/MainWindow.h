@@ -4,6 +4,15 @@
 #include <QMainWindow>
 #include <QTcpSocket>
 
+#include <QLineEdit>
+#include <QPushButton>
+#include<QWidget>
+#include<QVBoxLayout>
+#include <QScrollBar>
+
+
+#include "header/Client.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -21,10 +30,18 @@ public:
 private slots:
     void onSendButtonClicked();
     void onReadyRead();
+    void displayMessage(const QString &message);
+    void sendMessage();
 
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
+    Client *client;
+    QLineEdit *messageLineEdit;
+    QPushButton *sendButton;
+    QVBoxLayout *ConversationFrameLayout;
+    QFrame *ConversationFrame;
+    QScrollBar ScrollBar;
 };
 
 #endif // MAINWINDOW_H
