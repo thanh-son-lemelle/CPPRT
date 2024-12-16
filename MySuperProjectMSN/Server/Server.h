@@ -19,7 +19,7 @@ private slots:
     void onReadyRead();
     void onClientDisconnected();
 private:
-    QList<QTcpSocket*> clients;
+    QList<QTcpSocket*> connectedClientsList;
     QQueue<QString> messageQueue;
     void relayMessage(const QString &message, QTcpSocket *sender);
 };

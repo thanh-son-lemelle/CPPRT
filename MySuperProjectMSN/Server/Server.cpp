@@ -9,7 +9,7 @@ void Server::incomingConnection(qintptr socketDescriptor) {
     qDebug() << "Incoming connection with descriptor:" << socketDescriptor;
     QTcpSocket *clientSocket = new QTcpSocket(this);
     if (clientSocket->setSocketDescriptor(socketDescriptor)) {
-        clients.append(clientSocket);
+        connectedClientsList.append(clientSocket);
         connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
         connect(clientSocket, &QTcpSocket::disconnected, this, &Server::onClientDisconnected);
         qDebug() << "Client connected successfully.";
@@ -22,7 +22,7 @@ void Server::incomingConnection(qintptr socketDescriptor) {
 void Server::onClientDisconnected() {
     QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
     if (clientSocket) {
-        clients.removeAll(clientSocket);
+        connectedClientsList.removeAll(clientSocket);
         clientSocket->deleteLater();
         qDebug() << "Client disconnected.";
     } else {
@@ -45,7 +45,7 @@ void Server::onReadyRead() {
 }
 
 void Server::relayMessage(const QString &message, QTcpSocket *sender) {
-    for (QTcpSocket *client : clients) {
+    for (QTcpSocket *client : connectedClientsList) {
         if (client != sender) {
             QString formattedMessage = QString("%1 : %2")
                                            .arg(sender->socketDescriptor())
