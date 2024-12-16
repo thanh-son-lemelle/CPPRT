@@ -81,7 +81,7 @@ border: 2px solid rgb(35, 35, 35);</string>
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="ressources.qrc">
+         <iconset>
           <normaloff>:/client/assets/img/search.png</normaloff>:/client/assets/img/search.png</iconset>
         </property>
        </widget>
@@ -215,7 +215,7 @@ border-radius: 15px;</string>
         <string notr="true">background-color: rgb(21, 23, 24);
 border: 2px solid rgb(35, 35, 35);</string>
        </property>
-       <widget class="QLineEdit" name="messageLineEdit">
+       <widget class="QLineEdit" name="messageLineEdit2">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -228,34 +228,13 @@ border: 2px solid rgb(35, 35, 35);</string>
          <string notr="true">border: none;</string>
         </property>
         <property name="text">
-         <string>Salut</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="sendButton">
-        <property name="geometry">
-         <rect>
-          <x>445</x>
-          <y>55</y>
-          <width>25</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">border: none;
-border-radius: 50%;</string>
-        </property>
-        <property name="text">
          <string/>
         </property>
-        <property name="icon">
-         <iconset resource="ressources.qrc">
-          <normaloff>:/client/assets/img/arrowEnter.png</normaloff>:/client/assets/img/arrowEnter.png</iconset>
+        <property name="maxLength">
+         <number>32765</number>
         </property>
-        <property name="iconSize">
-         <size>
-          <width>25</width>
-          <height>25</height>
-         </size>
+        <property name="placeholderText">
+         <string>Enter your message</string>
         </property>
        </widget>
        <widget class="QFrame" name="frame">
@@ -296,7 +275,7 @@ background-color: rgb(44, 44, 44)</string>
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
+             <iconset>
               <normaloff>:/client/assets/img/textStyle.png</normaloff>:/client/assets/img/textStyle.png</iconset>
             </property>
            </widget>
@@ -310,7 +289,7 @@ background-color: rgb(44, 44, 44)</string>
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
+             <iconset>
               <normaloff>:/client/assets/img/emojiSmiley.png</normaloff>:/client/assets/img/emojiSmiley.png</iconset>
             </property>
            </widget>
@@ -324,7 +303,7 @@ background-color: rgb(44, 44, 44)</string>
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
+             <iconset>
               <normaloff>:/client/assets/img/download.png</normaloff>:/client/assets/img/download.png</iconset>
             </property>
            </widget>
@@ -338,7 +317,7 @@ background-color: rgb(44, 44, 44)</string>
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
+             <iconset>
               <normaloff>:/client/assets/img/microphone.png</normaloff>:/client/assets/img/microphone.png</iconset>
             </property>
            </widget>
@@ -352,7 +331,7 @@ background-color: rgb(44, 44, 44)</string>
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
+             <iconset>
               <normaloff>:/client/assets/img/camera.png</normaloff>:/client/assets/img/camera.png</iconset>
             </property>
            </widget>
@@ -391,7 +370,7 @@ background-color: rgb(44, 44, 44)</string>
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="ressources.qrc">
+          <iconset>
            <normaloff>:/client/assets/img/wizzLogo.png</normaloff>:/client/assets/img/wizzLogo.png</iconset>
          </property>
          <property name="iconSize">
@@ -402,6 +381,47 @@ background-color: rgb(44, 44, 44)</string>
          </property>
         </widget>
        </widget>
+       <widget class="QTextEdit" name="messageTextEdit">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>40</y>
+          <width>481</width>
+          <height>51</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="sendButton">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>55</y>
+          <width>25</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+border-radius: 50%;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/client/assets/img/arrowEnter.png</normaloff>:/client/assets/img/arrowEnter.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+       <zorder>messageLineEdit2</zorder>
+       <zorder>messageTextEdit</zorder>
+       <zorder>frame</zorder>
+       <zorder>sendButton</zorder>
       </widget>
       <widget class="QFrame" name="ConversationFrame">
        <property name="geometry">
@@ -491,7 +511,7 @@ border: 1px solid rgb(35, 35, 35);</string>
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="ressources.qrc">
+          <iconset>
            <normaloff>:/client/assets/img/logOutUser.png</normaloff>:/client/assets/img/logOutUser.png</iconset>
          </property>
          <property name="iconSize">
@@ -534,7 +554,7 @@ border: 1px solid rgb(35, 35, 35);</string>
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="ressources.qrc">
+          <iconset>
            <normaloff>:/client/assets/img/profileUser.png</normaloff>:/client/assets/img/profileUser.png</iconset>
          </property>
          <property name="iconSize">
@@ -577,7 +597,7 @@ border: 1px solid rgb(35, 35, 35);</string>
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="ressources.qrc">
+          <iconset>
            <normaloff>:/client/assets/img/notificationUser.png</normaloff>:/client/assets/img/notificationUser.png</iconset>
          </property>
          <property name="iconSize">
@@ -620,7 +640,7 @@ border: 1px solid rgb(35, 35, 35);</string>
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="ressources.qrc">
+          <iconset>
            <normaloff>:/client/assets/img/settingsUser.png</normaloff>:/client/assets/img/settingsUser.png</iconset>
          </property>
          <property name="iconSize">
@@ -664,7 +684,7 @@ border: 1px solid rgb(35, 35, 35);</string>
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="ressources.qrc">
+         <iconset>
           <normaloff>:/client/assets/img/profileLogo.png</normaloff>:/client/assets/img/profileLogo.png</iconset>
         </property>
         <property name="iconSize">
@@ -703,8 +723,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </widget>
   </widget>
  </widget>
- <resources>
-  <include location="ressources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
