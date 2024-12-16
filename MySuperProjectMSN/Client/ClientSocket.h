@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QThread>
 
 class ClientSocket : public QObject
 {
@@ -17,9 +18,10 @@ public:
 
 signals:
     void messageReceived(const QString &message);
+    void serverResponse(const QString &response);
+    void errorOccurred(const QString &error);
     void connectionEstablished();
     void connectionClosed();
-    void errorOccurred(const QString &error);
 
 private slots:
     void onReadyRead();
@@ -27,7 +29,12 @@ private slots:
     void onErrorOccurred(QAbstractSocket::SocketError socketError);
 
 private:
+    QString hostAddress;
+    quint16 hostPort;
+    bool attemptReconnect;
     QTcpSocket *socket;
+
+    void reconnectToServer();
 };
 
 #endif // CLIENTSOCKET_H
