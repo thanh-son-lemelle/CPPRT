@@ -45,13 +45,22 @@ void Server::onReadyRead() {
 }
 
 void Server::relayMessage(const QString &message, QTcpSocket *sender) {
+    QString formattedMessage = QString("%1 : %2")
+                                   .arg(sender->socketDescriptor())
+                                   .arg(message);
     for (QTcpSocket *client : connectedClientsList) {
-        if (client != sender) {
-            QString formattedMessage = QString("%1 : %2")
-                                           .arg(sender->socketDescriptor())
-                                           .arg(message);
+        if (client->state() == QAbstractSocket::ConnectedState) {
             client->write(formattedMessage.toUtf8());
-            qDebug() << "Message relayé à:" << client->peerAddress().toString();
+            if (!client->waitForBytesWritten(3000)) {
+                qDebug() << "Erreur d'écriture pour le client:" << client->socketDescriptor();
+                messageQueue.enqueue(formattedMessage);
+            } else {
+                qDebug() << "Message relayé à:" << client->peerAddress().toString()
+                         << "avec contenu:" << formattedMessage;
+            }
+        } else {
+            qDebug() << "Client déconnecté. Message ignoré pour le socket:"
+                     << client->socketDescriptor();
         }
     }
 }
