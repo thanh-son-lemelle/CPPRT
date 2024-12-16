@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QList>
 #include <QHostAddress>
+#include <QQueue>
 
 class Server : public QTcpServer {
     Q_OBJECT
@@ -17,8 +18,10 @@ protected:
 private slots:
     void onReadyRead();
     void onClientDisconnected();
+    void relayMessage(const QString &message, QTcpSocket *sender);
 private:
     QList<QTcpSocket*> clients;
+    QQueue<QString> messageQueue;
 };
 
 #endif // SERVEUR_H

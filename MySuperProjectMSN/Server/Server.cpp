@@ -19,21 +19,6 @@ void Server::incomingConnection(qintptr socketDescriptor) {
     }
 }
 
-void Server::onReadyRead() {
-    QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
-    if (!clientSocket) {
-        qDebug() << "Invalid client socket in onReadyRead.";
-        return;
-    }
-    QByteArray data = clientSocket->readAll();
-    qDebug() << "Data received from client:" << data;
-    for (QTcpSocket *socket : clients) {
-        if (socket != clientSocket) {
-            socket->write(data);
-        }
-    }
-}
-
 void Server::onClientDisconnected() {
     QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
     if (clientSocket) {
@@ -42,5 +27,31 @@ void Server::onClientDisconnected() {
         qDebug() << "Client disconnected.";
     } else {
         qDebug() << "Error: Disconnected signal from an invalid socket.";
+    }
+}
+
+void Server::onReadyRead() {
+    QTcpSocket *clientSocket = qobject_cast<QTcpSocket *>(sender());
+    if (clientSocket) {
+        QByteArray data = clientSocket->readAll();
+        QString message = QString::fromUtf8(data).trimmed();
+
+        qDebug() << "Message reçu de" << clientSocket->peerAddress().toString() << ":" << message;
+
+        messageQueue.enqueue(message);
+
+        relayMessage(message, clientSocket);
+    }
+}
+
+void Server::relayMessage(const QString &message, QTcpSocket *sender) {
+    for (QTcpSocket *client : clients) {
+        if (client != sender) {
+            QString formattedMessage = QString("%1 : %2")
+                                           .arg(sender->socketDescriptor())
+                                           .arg(message);
+            client->write(formattedMessage.toUtf8());
+            qDebug() << "Message relayé à:" << client->peerAddress().toString();
+        }
     }
 }
