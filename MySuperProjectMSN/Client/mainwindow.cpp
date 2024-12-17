@@ -11,27 +11,26 @@ MainWindow::MainWindow(QWidget *parent) :
     // Define initial page as LogIn
     ui->stackedWidget->setCurrentIndex(2);
 
+    // Switch between pages: SignUp(0), Login(1), ChatInterface(2) and Profile (3)
+    connectButtonToPage(ui->LogInPushButtonCreate, 0);
+    connectButtonToPage(ui->SignInPushButtonLogin, 1);
+    connectButtonToPage(ui->LoginValidationPushButton, 2);
+    connectButtonToPage(ui->BtnEditProfile, 3);
+    connectButtonToPage(ui->BtnDisconnect, 0);
+    connectButtonToPage(ui->BtnQuitProfile, 2);
+    connectButtonToPage(ui->SubmitAccountPushButton, 2);
+    connectButtonToPage(ui->CreateValidationPushButton, 1);
+
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
     connect(clientSocket, &ClientSocket::messageReceived, this, &MainWindow::onMessageReceived);
     connect(clientSocket, &ClientSocket::connectionEstablished, this, &MainWindow::onConnectionEstablished);
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
     connect(ui->Wizz, &QToolButton::clicked, this, &MainWindow::onWizzClicked);
-
-    // Switch between SignIn and LogIn page
-    connect(ui->LogInPushButtonCreate, &QPushButton::clicked, this,[=](){
-    ui->stackedWidget->setCurrentIndex(0);
-    });
-
-    connect(ui->SignInPushButtonLogin, &QPushButton::clicked, this,[=](){
-        ui->stackedWidget->setCurrentIndex(1);
-    });
-
     clientSocket->connectToServer("127.0.0.1", 1234);
 
     QLabel *messageLabel1 = new QLabel("TEST");
     ui->ConversationFrameLayout->addWidget(messageLabel1);
-
 
     QLabel *messageLabel2 = new QLabel("TEST2");
     ui->ConversationFrameLayout->addWidget(messageLabel2);
@@ -67,14 +66,12 @@ void MainWindow::onErrorOccurred(const QString &error) {
     // ui->statusbar->showMessage("Error: " + error);
 }
 
-
 // Switch to the desire page using the index page
-void MainWindow::SwitchPage(int PageIndex)
-{
-    ui->stackedWidget->setCurrentIndex(PageIndex);
-    qDebug()<< "Page Index: "<< PageIndex;
+void MainWindow::connectButtonToPage(QAbstractButton* button, int pageIndex) {
+    connect(button, &QPushButton::clicked, this, [=]() {
+        ui->stackedWidget->setCurrentIndex(pageIndex);
+    });
 }
-
 
 void MainWindow::onWizzClicked() {
     QSequentialAnimationGroup *shakeAnimation = new QSequentialAnimationGroup(this);
