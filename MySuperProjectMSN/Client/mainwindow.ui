@@ -30,7 +30,7 @@
      <string notr="true">background-color: #0B0B12;</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="SignUp">
      <widget class="QWidget" name="SignUpPanel" native="true">

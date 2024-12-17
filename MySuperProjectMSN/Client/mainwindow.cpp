@@ -9,18 +9,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Define initial page as LogIn
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(2);
 
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
     connect(clientSocket, &ClientSocket::messageReceived, this, &MainWindow::onMessageReceived);
     connect(clientSocket, &ClientSocket::connectionEstablished, this, &MainWindow::onConnectionEstablished);
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
+    connect(ui->Wizz, &QToolButton::clicked, this, &MainWindow::onWizzClicked);
 
     // Switch between SignIn and LogIn page
     connect(ui->LogInPushButtonCreate, &QPushButton::clicked, this,[=](){
     ui->stackedWidget->setCurrentIndex(0);
     });
+
     connect(ui->SignInPushButtonLogin, &QPushButton::clicked, this,[=](){
         ui->stackedWidget->setCurrentIndex(1);
     });
@@ -74,3 +76,26 @@ void MainWindow::SwitchPage(int PageIndex)
 }
 
 
+void MainWindow::onWizzClicked() {
+    QSequentialAnimationGroup *shakeAnimation = new QSequentialAnimationGroup(this);
+    QPoint originalPos = ui->ChatPanel->pos();
+
+    for (int i = 0; i < 6; ++i) {
+        int offset = (i % 2 == 0) ? 10 : -10;
+        QPropertyAnimation *shake = new QPropertyAnimation(ui->ChatPanel, "pos", this);
+        shake->setDuration(100);
+        shake->setStartValue(originalPos);
+        shake->setEndValue(originalPos + QPoint(offset, 0));
+        shake->setEasingCurve(QEasingCurve::InOutSine);
+        shakeAnimation->addAnimation(shake);
+    }
+
+    QPropertyAnimation *returnToOriginal = new QPropertyAnimation(ui->ChatPanel, "pos", this);
+    returnToOriginal->setDuration(100);
+    returnToOriginal->setStartValue(ui->ChatPanel->pos());
+    returnToOriginal->setEndValue(originalPos);
+    returnToOriginal->setEasingCurve(QEasingCurve::InOutSine);
+    shakeAnimation->addAnimation(returnToOriginal);
+
+    shakeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+}

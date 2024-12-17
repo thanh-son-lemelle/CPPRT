@@ -6,6 +6,9 @@
 
 #include <QStackedWidget>
 #include <QPushButton>
+#include <QToolButton>
+#include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,6 +31,7 @@ private slots:
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);
     void SwitchPage(int PageIndex);
+    void onWizzClicked();
 
 private:
     Ui::MainWindow *ui;
