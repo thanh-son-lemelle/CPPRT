@@ -27,7 +27,7 @@ private slots:
     void onConnectionEstablished();
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);
-    void SwitchPage(int PageIndex);
+    void connectButtonToPage(QAbstractButton* button, int pageIndex);
 
 private:
     Ui::MainWindow *ui;
