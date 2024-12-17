@@ -5,6 +5,12 @@
 #include "ClientSocket.h"
 #include "QHBoxLayout"
 
+#include <QStackedWidget>
+#include <QPushButton>
+#include <QToolButton>
+#include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -25,10 +31,13 @@ private slots:
     void onConnectionEstablished();
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);
+    void onWizzClicked();
+    void connectButtonToPage(QAbstractButton* button, int pageIndex);
 
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
+    QStackedWidget *stackedWidget;
 };
 
 #endif // MAINWINDOW_H
