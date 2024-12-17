@@ -31,6 +31,7 @@ void ClientSocket::connectToServer(const QString &host, quint16 port) {
 }
 
 void ClientSocket::sendMessage(const QString &message) {
+    if (message != ""){
     if (socket->state() == QAbstractSocket::ConnectedState) {
         socket->write(message.toUtf8());
         qDebug() << "Message sent to server:" << message;
@@ -38,7 +39,7 @@ void ClientSocket::sendMessage(const QString &message) {
         qDebug() << "Error: Cannot send message. Socket is not connected.";
         emit errorOccurred("Socket is not connected.");
     }
-}
+        }}
 
 void ClientSocket::onReadyRead() {
     QByteArray data = socket->readAll();

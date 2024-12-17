@@ -25,5 +25,8 @@
         <file>assets/img/textStyle.png</file>
         <file>assets/img/whiteCircle.png</file>
         <file>assets/img/wizzLogo.png</file>
+        <file>assets/img/logOut.png</file>
+        <file>assets/img/mute.png</file>
+        <file>assets/img/pen.png</file>
     </qresource>
 </RCC>

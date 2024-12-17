@@ -8,11 +8,22 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Define initial page as LogIn
+    ui->stackedWidget->setCurrentIndex(0);
+
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
     connect(clientSocket, &ClientSocket::messageReceived, this, &MainWindow::onMessageReceived);
     connect(clientSocket, &ClientSocket::connectionEstablished, this, &MainWindow::onConnectionEstablished);
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
+
+    // Switch between SignIn and LogIn page
+    connect(ui->LogInPushButtonCreate, &QPushButton::clicked, this,[=](){
+    ui->stackedWidget->setCurrentIndex(0);
+    });
+    connect(ui->SignInPushButtonLogin, &QPushButton::clicked, this,[=](){
+        ui->stackedWidget->setCurrentIndex(1);
+    });
 
     clientSocket->connectToServer("127.0.0.1", 1234);
 
@@ -34,7 +45,6 @@ void MainWindow::onSendButtonClicked() {
     ui->messageLineEdit->clear();
 }
 
-
 void MainWindow::onMessageReceived(const QString &message) {
     QLabel *messageLabel = new QLabel(message);
     ui->ConversationFrameLayout->addWidget(messageLabel);
@@ -54,3 +64,13 @@ void MainWindow::onErrorOccurred(const QString &error) {
     qDebug()<< "Error: " << error;
     // ui->statusbar->showMessage("Error: " + error);
 }
+
+
+// Switch to the desire page using the index page
+void MainWindow::SwitchPage(int PageIndex)
+{
+    ui->stackedWidget->setCurrentIndex(PageIndex);
+    qDebug()<< "Page Index: "<< PageIndex;
+}
+
+

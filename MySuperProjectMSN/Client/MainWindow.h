@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include "ClientSocket.h"
 
+#include <QStackedWidget>
+#include <QPushButton>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -24,10 +27,12 @@ private slots:
     void onConnectionEstablished();
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);
+    void SwitchPage(int PageIndex);
 
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
+    QStackedWidget *stackedWidget;
 };
 
 #endif // MAINWINDOW_H
