@@ -1,0 +1,36 @@
+{
+    "users": [
+        {
+            "email": "lucas@gmail.com",
+            "firstName": "Lucas",
+            "lastName": "Martinie",
+            "password": "Lucas1!",
+            "userId": 1,
+            "username": "Lucas123"
+        },
+        {
+            "email": "vanny@gmail.com",
+            "firstName": "Vanny",
+            "lastName": "Lamorte",
+            "password": "Vanny1!",
+            "userId": 2,
+            "username": "Vanny123"
+        },
+        {
+            "email": "thanh@gmail.com",
+            "firstName": "Thanh",
+            "lastName": "Lemelle",
+            "password": "Thanh1!",
+            "userId": 3,
+            "username": "Thanh123"
+        },
+        {
+            "email": "z",
+            "firstName": "z ",
+            "lastName": "z",
+            "password": "z",
+            "type": "register",
+            "username": "z"
+        }
+    ]
+}

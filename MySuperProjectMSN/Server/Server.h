@@ -1,10 +1,12 @@
 #ifndef SERVEUR_H
 #define SERVEUR_H
-
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QList>
 #include <QHostAddress>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 class Server : public QTcpServer {
     Q_OBJECT
@@ -19,6 +21,10 @@ private slots:
     void onClientDisconnected();
 private:
     QList<QTcpSocket*> clients;
+    void sendMessage (QTcpSocket *clientSocket, const QString &message);
+    void sendRegistrationResponse(QTcpSocket *clientSocket, bool success, const QString &message);
+    void sendLoginResponse(QTcpSocket *clientSocket, bool success, const QString &message);
+
 };
 
 #endif // SERVEUR_H

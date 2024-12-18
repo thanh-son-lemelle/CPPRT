@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QThread>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 class ClientSocket : public QObject
 {
@@ -15,6 +17,8 @@ public:
 
     void connectToServer(const QString &host, quint16 port);
     void sendMessage(const QString &message);
+    void sendLoginRequest(QString email, QString password);
+    void sendRegistrationRequest(QString firstName, QString lastName, QString email, QString password, QString username);
 
 signals:
     void messageReceived(const QString &message);
@@ -22,6 +26,10 @@ signals:
     void errorOccurred(const QString &error);
     void connectionEstablished();
     void connectionClosed();
+    void loginSuccess();
+    void loginError();
+    void registrationSuccess();
+    void registrationError();
 
 private slots:
     void onReadyRead();
@@ -35,6 +43,7 @@ private:
     QTcpSocket *socket;
 
     void reconnectToServer();
+    void handleServerResponse(const QByteArray &data);
 };
 
 #endif // CLIENTSOCKET_H

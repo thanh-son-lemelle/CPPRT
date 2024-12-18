@@ -30,22 +30,13 @@ void ClientSocket::connectToServer(const QString &host, quint16 port) {
     }
 }
 
-void ClientSocket::sendMessage(const QString &message) {
-    if (message != ""){
-    if (socket->state() == QAbstractSocket::ConnectedState) {
-        socket->write(message.toUtf8());
-        qDebug() << "Message sent to server:" << message;
-    } else {
-        qDebug() << "Error: Cannot send message. Socket is not connected.";
-        emit errorOccurred("Socket is not connected.");
-    }
-        }}
-
 void ClientSocket::onReadyRead() {
     QByteArray data = socket->readAll();
+    handleServerResponse(data);
+    /*
     QString message = QString::fromUtf8(data);
     qDebug() << "Message received from server:" << message;
-    emit messageReceived(message);
+    emit messageReceived(message);*/
 }
 
 void ClientSocket::onDisconnected() {
@@ -56,7 +47,6 @@ void ClientSocket::onDisconnected() {
         reconnectToServer();
     }
 }
-
 
 void ClientSocket::onErrorOccurred(QAbstractSocket::SocketError socketError) {
     Q_UNUSED(socketError)
@@ -71,3 +61,78 @@ void ClientSocket::reconnectToServer() {
     socket->abort();
     socket->connectToHost(hostAddress, hostPort);
 }
+
+void ClientSocket::handleServerResponse(const QByteArray &data) {
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (!doc.isObject()) {
+        qWarning() << "Invalid JSON response from server.";
+        return;
+    }
+
+    QJsonObject response = doc.object();
+    QString type = response["type"].toString();
+
+    if (type == "message") {
+        QString content = response["content"].toString();
+        qDebug() << "Server message:" << content;
+    } else if (type == "registration") {
+        bool status = response["status"].toBool();
+        QString message = response["message"].toString();
+        qDebug() << "Registration Status:" << status << "-" << message;
+        (status == true) ? emit registrationSuccess() : emit loginError();
+    } else if (type == "login") {
+        bool status = response["status"].toBool();
+        QString message = response["message"].toString();
+        qDebug() << "Login Status:" << status << "-" << message;
+        (status == true) ? emit loginSuccess() : emit loginError();
+
+    } else {
+        qWarning() << "Unknown response type:" << type;
+    }
+}
+
+void ClientSocket::sendRegistrationRequest(QString firstName, QString lastName, QString email, QString password, QString username) {
+    QJsonObject request;
+    request["type"] = "register";
+    request["email"] = email;
+    request["password"] = password;
+    request["firstName"] = firstName;
+    request["lastName"] = lastName;
+    request["username"] = username;
+
+    QJsonDocument doc(request);
+    socket->write(doc.toJson());
+}
+
+void ClientSocket::sendLoginRequest(QString email, QString password) {
+    QJsonObject request;
+    request["type"] = "login";
+    request["email"] = email;
+    request["password"] = password;
+
+    QJsonDocument doc(request);
+    socket->write(doc.toJson());
+}
+
+void ClientSocket::sendMessage(const QString &message) {
+
+    if (message != ""){
+        if (socket->state() == QAbstractSocket::ConnectedState) {
+            QJsonObject request;
+            request["type"] = "message";
+            request["message"] = message;
+
+            QJsonDocument doc(request);
+            socket->write(doc.toJson());
+            qDebug() << "Message sent to server:" << message;
+        } else {
+            qDebug() << "Error: Cannot send message. Socket is not connected.";
+            emit errorOccurred("Socket is not connected.");
+       }
+    }
+}
+
+
+
+
+

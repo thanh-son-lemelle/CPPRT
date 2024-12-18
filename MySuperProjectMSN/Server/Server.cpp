@@ -1,3 +1,4 @@
+#include "ConnexionController.h"
 #include "server.h"
 #include <QDebug>
 
@@ -20,17 +21,60 @@ void Server::incomingConnection(qintptr socketDescriptor) {
 }
 
 void Server::onReadyRead() {
-    QTcpSocket *clientSocket = qobject_cast<QTcpSocket*>(sender());
+    QTcpSocket *clientSocket = qobject_cast<QTcpSocket *>(sender());
     if (!clientSocket) {
         qDebug() << "Invalid client socket in onReadyRead.";
         return;
     }
+
     QByteArray data = clientSocket->readAll();
-    qDebug() << "Data received from client:" << data;
-    for (QTcpSocket *socket : clients) {
-        if (socket != clientSocket) {
-            socket->write(data);
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (!doc.isObject()) {
+        sendMessage(clientSocket, "Error: Invalid JSON data received.");
+        return;
+    }
+
+    QJsonObject request = doc.object();
+    QString requestType = request["type"].toString();
+
+    if (requestType == "register") {
+        QString email = request["email"].toString();
+            qDebug() << "Register" << email;
+
+        if (ConnexionController::isEmailExists(email)) {
+            sendRegistrationResponse(clientSocket, false, "Email already exists.");
+        } else {
+            ConnexionController::saveUserInfo(request);
+            sendRegistrationResponse(clientSocket, true, "Registration successful.");
         }
+
+    } else if (requestType == "login") {
+        QString email = request["email"].toString();
+        QString password = request["password"].toString();
+        qDebug() << "Login" << email << password;
+
+        if (ConnexionController::validateCredentials(email, password)) {
+            sendLoginResponse(clientSocket, true, "Login successful.");
+        } else {
+            sendLoginResponse(clientSocket, false, "Invalid credentials.");
+        }
+
+    } else if (requestType == "message") {
+        QString message = request["message"].toString();
+        qDebug() << "Login" << message;
+
+        /* if (validateCredentials(email, password)) {
+            sendLoginResponse(clientSocket, true, "Login successful.");
+        } else {
+            sendLoginResponse(clientSocket, false, "Invalid credentials.");
+        } */
+        for (QTcpSocket *socket : clients){
+            if (socket != clientSocket) {
+                socket->write(data);
+            }
+        }
+    } else {
+        sendMessage(clientSocket, "Error: Unknown request type.");
     }
 }
 
@@ -44,3 +88,36 @@ void Server::onClientDisconnected() {
         qDebug() << "Error: Disconnected signal from an invalid socket.";
     }
 }
+
+void Server::sendMessage(QTcpSocket *clientSocket, const QString &message) {
+    QJsonObject response;
+    response["type"] = "message";
+    response["content"] = message;
+
+    QJsonDocument doc(response);
+    clientSocket->write(doc.toJson());
+    clientSocket->flush();
+}
+
+void Server::sendRegistrationResponse(QTcpSocket *clientSocket, bool success, const QString &message) {
+    QJsonObject response;
+    response["type"] = "registration";
+    response["status"] = success;
+    response["message"] = message;
+
+    QJsonDocument doc(response);
+    clientSocket->write(doc.toJson());
+    clientSocket->flush();
+}
+
+void Server::sendLoginResponse(QTcpSocket *clientSocket, bool success, const QString &message) {
+    QJsonObject response;
+    response["type"] = "login";
+    response["status"] = success ;
+    response["message"] = message;
+
+    QJsonDocument doc(response);
+    clientSocket->write(doc.toJson());
+    clientSocket->flush();
+}
+

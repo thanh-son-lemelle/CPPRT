@@ -33,11 +33,14 @@ private slots:
     void onErrorOccurred(const QString &error);
     void onWizzClicked();
     void connectButtonToPage(QAbstractButton* button, int pageIndex);
+    void onLoginClicked();
+    void onSigninClicked();
 
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
     QStackedWidget *stackedWidget;
+    void connectButtonToChatInterface();
 };
 
 #endif // MAINWINDOW_H

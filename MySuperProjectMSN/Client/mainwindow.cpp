@@ -11,25 +11,33 @@ MainWindow::MainWindow(QWidget *parent) :
     // Define initial page as LogIn
     ui->stackedWidget->setCurrentIndex(2);
 
-    // Switch between pages: SignUp(0), Login(1), ChatInterface(2) and Profile (3)
+    // Switch between pages: SignUp(1), Login(0), ChatInterface(2) and Profile (3)
     connectButtonToPage(ui->LogInPushButtonCreate, 0);
     connectButtonToPage(ui->SignInPushButtonLogin, 1);
-    connectButtonToPage(ui->LoginValidationPushButton, 2);
     connectButtonToPage(ui->BtnEditProfile, 3);
     connectButtonToPage(ui->BtnDisconnect, 0);
     connectButtonToPage(ui->BtnQuitProfile, 2);
     connectButtonToPage(ui->SubmitAccountPushButton, 2);
-    connectButtonToPage(ui->CreateValidationPushButton, 1);
+    // connectButtonToPage(ui->CreateValidationPushButton, 0);
 
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
     connect(clientSocket, &ClientSocket::messageReceived, this, &MainWindow::onMessageReceived);
     connect(clientSocket, &ClientSocket::connectionEstablished, this, &MainWindow::onConnectionEstablished);
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
+    connect(clientSocket, &ClientSocket::loginSuccess, this, &MainWindow::connectButtonToChatInterface);
+    connect(clientSocket, &ClientSocket::registrationSuccess, this, &MainWindow::connectButtonToChatInterface);
     connect(ui->Wizz, &QToolButton::clicked, this, &MainWindow::onWizzClicked);
     clientSocket->connectToServer("127.0.0.1", 1234);
 
     ui->ConversationFrameLayout->setAlignment(Qt::AlignBottom);
+
+    // Send email and password to server
+    connect(ui->LoginValidationPushButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
+    connect(ui->EmailEdit, &QLineEdit::returnPressed, this, &MainWindow::onLoginClicked);
+    connect(ui->PasswordEdit, &QLineEdit::returnPressed, this, &MainWindow::onLoginClicked);
+
+    connect(ui->CreateValidationPushButton, &QPushButton::clicked, this, &MainWindow::onSigninClicked);
 }
 
 MainWindow::~MainWindow() {
@@ -81,6 +89,11 @@ void MainWindow::connectButtonToPage(QAbstractButton* button, int pageIndex) {
         ui->stackedWidget->setCurrentIndex(pageIndex);
     });
 }
+
+void MainWindow::connectButtonToChatInterface() {
+        ui->stackedWidget->setCurrentIndex(2);
+}
+
 void MainWindow::onWizzClicked() {
     QSequentialAnimationGroup *shakeAnimation = new QSequentialAnimationGroup(this);
     QPoint originalPos = ui->ChatPanel->pos();
@@ -103,4 +116,35 @@ void MainWindow::onWizzClicked() {
     shakeAnimation->addAnimation(returnToOriginal);
 
     shakeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void MainWindow::onLoginClicked() {
+
+    QString email = ui->EmailEdit ->text();
+    QString password = ui->PasswordEdit ->text();
+
+    if (email.isEmpty()|| password.isEmpty()) return;
+    clientSocket -> sendLoginRequest(email,password);
+
+    //connectButtonToPage(ui->LoginValidationPushButton, 2);
+}
+
+void MainWindow::onSigninClicked() {
+
+    QString firstName = ui->FirstNamePlaceholder ->text();
+    QString lastName = ui->LastNamePlaceholder ->text();
+    QString username = ui->UsernamePlaceholder->text();
+    QString email = ui->EmailPlaceholder ->text();
+    QString password = ui->PasswordPlaceholder->text();
+    QString confirmPassword = ui->ConfirmPasswordPlaceholder->text();
+
+    if (email.isEmpty()|| password.isEmpty() || firstName.isEmpty()|| lastName.isEmpty()|| username.isEmpty()) {
+        qDebug() << "All fields must be completed.";
+        return;
+    };
+    if (password != confirmPassword){
+        qDebug() << "Password doesn't match";
+            return;
+    }
+    clientSocket -> sendRegistrationRequest(firstName, lastName, email, password, username);
 }
