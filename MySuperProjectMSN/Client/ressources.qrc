@@ -28,5 +28,6 @@
         <file>assets/img/logOut.png</file>
         <file>assets/img/mute.png</file>
         <file>assets/img/pen.png</file>
+        <file>assets/img/warning.png</file>
     </qresource>
 </RCC>

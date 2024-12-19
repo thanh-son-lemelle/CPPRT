@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow),
@@ -28,8 +29,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
     connect(clientSocket, &ClientSocket::loginSuccess, this, &MainWindow::connectButtonToChatInterface);
+    connect(clientSocket, &ClientSocket::loginError, this, &MainWindow::displayInvalidPasswordEmail);
     connect(clientSocket, &ClientSocket::registrationSuccess, this, &MainWindow::connectButtonToChatInterface);
-    clientSocket->connectToServer("127.0.0.1", 1234);
+    clientSocket->connectToServer("127.0.0.1", 2512);
 
     // Display message chat from bottom of conversation frame
     ui->ConversationFrameLayout->setAlignment(Qt::AlignBottom);
@@ -44,6 +46,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     // Toggle password visibility (show or hide)
     onEyePen();
+
+    // Hide warning message for invalid password or email
+    ui->WarningLogin->setVisible(false);
+
 }
 
 MainWindow::~MainWindow()
@@ -106,8 +112,10 @@ void MainWindow::connectButtonToPage(QAbstractButton *button, int pageIndex)
 
 void MainWindow::connectButtonToChatInterface()
 {
+    ui->WarningLogin->setVisible(false);
+    ui->EmailEdit->text() = "";
+    ui->PasswordEdit->text() = "";
     ui->stackedWidget->setCurrentIndex(2);
-
     // Display user name on chat interface
     ui->UserPseudo->setText(clientSocket->getUserName());
 
@@ -294,4 +302,8 @@ void MainWindow::editUserInfo(QPushButton *penButton)
             break;
         }
     }
+}
+
+void MainWindow::displayInvalidPasswordEmail(){
+    ui->WarningLogin->setVisible(true);
 }

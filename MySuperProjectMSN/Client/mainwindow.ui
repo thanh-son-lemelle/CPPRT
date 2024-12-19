@@ -27,10 +27,11 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #0B0B12;</string>
+     <string notr="true">background-color: #0B0B12;
+</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="LogIn">
      <widget class="QWidget" name="SignUpPanel" native="true">
@@ -45,7 +46,8 @@
       <property name="styleSheet">
        <string notr="true">background-color: rgb(15, 15, 15);
 border-radius: 15px;
-border: 2px solid rgb(35, 35, 35);</string>
+border: none;
+</string>
       </property>
       <widget class="QWidget" name="InputEmailCo" native="true">
        <property name="geometry">
@@ -390,30 +392,86 @@ border-radius: 5px;</string>
         <string>Forgot Password ?</string>
        </property>
       </widget>
-      <widget class="QLabel" name="OrSignInWith_2">
+      <widget class="QFrame" name="WarningLogin">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>130</y>
-         <width>261</width>
-         <height>31</height>
+         <y>89</y>
+         <width>600</width>
+         <height>51</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <family>Tahoma</family>
-         <pointsize>8</pointsize>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="styleSheet">
-        <string notr="true">border: none;
+        <string notr="true">border-radius: 5px;
+background-color: #372226;
+border: 1px solid #ee554d;
+display: none;</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="OrSignInWith_2">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>10</y>
+          <width>261</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Tahoma</family>
+          <pointsize>9</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+border-radius: 3px;
 background-color: none;
 </string>
-       </property>
-       <property name="text">
-        <string>Invalid password or email</string>
-       </property>
+        </property>
+        <property name="text">
+         <string>Oops ! Invalid password or email</string>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="Warning">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>10</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+background-color: none;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="ressources.qrc">
+          <normaloff>:/client/assets/img/warning.png</normaloff>:/client/assets/img/warning.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>
@@ -1725,7 +1783,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </widget>
     </widget>
     <widget class="QWidget" name="EditProfilePage">
-     <widget class="QWidget" name="LoginPanel_2" native="true">
+     <widget class="QWidget" name="EditPanel" native="true">
       <property name="geometry">
        <rect>
         <x>135</x>

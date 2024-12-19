@@ -39,6 +39,7 @@ private slots:
     void onEyePasswordPressed(QToolButton* eyeButton);
     void onEyePen();
     void editUserInfo(QPushButton *penButton);
+    void displayInvalidPasswordEmail();
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
