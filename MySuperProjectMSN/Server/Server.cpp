@@ -61,14 +61,6 @@ void Server::onReadyRead() {
         }
 
     } else if (requestType == "message") {
-        QString message = request["message"].toString();
-        qDebug() << "Login" << message;
-
-        /* if (validateCredentials(email, password)) {
-            sendLoginResponse(clientSocket, true, "Login successful.");
-        } else {
-            sendLoginResponse(clientSocket, false, "Invalid credentials.");
-        } */
         for (QTcpSocket *socket : clients){
             if (socket != clientSocket) {
                 socket->write(data);

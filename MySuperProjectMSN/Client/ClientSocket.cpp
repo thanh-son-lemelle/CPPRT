@@ -83,8 +83,10 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
 
     QString type = response["type"].toString();
     if (type == "message") {
-        QString content = response["content"].toString();
+        QString content = response["message"].toString();
+        QString username = response["content"].toString();
         qDebug() << "Server message:" << content;
+        emit messageReceived(response);
     } else if (type == "registration") {
         bool status = response["status"].toBool();
         QString message = response["message"].toString();
@@ -153,6 +155,7 @@ void ClientSocket::sendMessage(const QString &message)
         {
             QJsonObject request;
             request["type"] = "message";
+            request["username"] = getUserName();
             request["message"] = message;
 
             QJsonDocument doc(request);

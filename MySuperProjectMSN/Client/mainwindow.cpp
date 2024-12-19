@@ -64,9 +64,12 @@ void MainWindow::onSendButtonClicked()
     ui->ConversationFrameLayout->addLayout(messageLayout);
 }
 
-void MainWindow::onMessageReceived(const QString &message)
+void MainWindow::onMessageReceived(const QJsonObject &object)
 {
-    QLabel *messageLabel = new QLabel(message);
+
+    QString username = object["username"].toString();
+    QString message = object["message"].toString();
+    QLabel *messageLabel = new QLabel(username + "\n" + message);
 
     QHBoxLayout *messageLayout = new QHBoxLayout();
     messageLabel->setContentsMargins(5, 5, 5, 5);
@@ -75,6 +78,7 @@ void MainWindow::onMessageReceived(const QString &message)
     messageLayout->setAlignment(messageLabel, Qt::AlignRight);
 
     ui->ConversationFrameLayout->addLayout(messageLayout);
+    qDebug() << messageLabel;
 }
 
 void MainWindow::onConnectionEstablished()

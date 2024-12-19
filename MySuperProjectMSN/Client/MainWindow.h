@@ -27,7 +27,7 @@ public:
 
 private slots:
     void onSendButtonClicked();
-    void onMessageReceived(const QString &message);
+    void onMessageReceived(const QJsonObject &object);
     void onConnectionEstablished();
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);

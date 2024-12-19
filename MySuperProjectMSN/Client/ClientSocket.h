@@ -25,7 +25,7 @@ public:
     QString getUserLastName() const { return userLastName; }
 
 signals:
-    void messageReceived(const QString &message);
+    void messageReceived(const QJsonObject &message);
     void serverResponse(const QString &response);
     void errorOccurred(const QString &error);
     void connectionEstablished();
