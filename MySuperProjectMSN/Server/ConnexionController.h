@@ -15,6 +15,7 @@ public:
     bool static validateCredentials(const QString& email, const QString& password);
     bool static isEmailExists(QString &email);
     void static saveUserInfo(const QJsonObject &userInfo);
+    QJsonObject static getUserInfo(const QString &email);
 
     // bool static validateCredentials(const QString& email, const QString& password);
 

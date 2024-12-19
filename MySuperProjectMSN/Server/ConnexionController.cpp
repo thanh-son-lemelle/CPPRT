@@ -150,3 +150,44 @@ void ConnexionController::saveUserInfo(const QJsonObject &userInfo) {
     }
 }
 
+QJsonObject ConnexionController::getUserInfo(const QString &email) {
+    QString filePath = "../../../Server/data/userInfo.json";
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Unable to open file:" << filePath;
+        return QJsonObject();
+    }
+
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+    if (!doc.isObject()) {
+        qWarning() << "Invalid JSON format in file.";
+        return QJsonObject();
+    }
+
+    QJsonObject rootObj = doc.object();
+    if (!rootObj.contains("users") || !rootObj["users"].isArray()) {
+        qWarning() << "No 'users' array found in JSON.";
+        return QJsonObject();
+    }
+
+    QJsonArray usersArray = rootObj["users"].toArray();
+
+    for (const QJsonValue &value : usersArray) {
+        if (!value.isObject()) {
+            continue;
+        }
+
+        QJsonObject userObj = value.toObject();
+        if (userObj["email"].toString() == email) {
+            qDebug() << "User found:" << userObj;
+            return userObj;
+        }
+    }
+
+    qWarning() << "User not found with email:" << email;
+    return QJsonObject();
+}

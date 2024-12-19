@@ -54,9 +54,10 @@ void Server::onReadyRead() {
         qDebug() << "Login" << email << password;
 
         if (ConnexionController::validateCredentials(email, password)) {
-            sendLoginResponse(clientSocket, true, "Login successful.");
+            QJsonObject userInfo = ConnexionController::getUserInfo(email);
+            sendLoginResponse(clientSocket, true, "Login successful.", userInfo);
         } else {
-            sendLoginResponse(clientSocket, false, "Invalid credentials.");
+            sendLoginResponse(clientSocket, false, "Invalid credentials.", QJsonObject());
         }
 
     } else if (requestType == "message") {
@@ -110,11 +111,12 @@ void Server::sendRegistrationResponse(QTcpSocket *clientSocket, bool success, co
     clientSocket->flush();
 }
 
-void Server::sendLoginResponse(QTcpSocket *clientSocket, bool success, const QString &message) {
+void Server::sendLoginResponse(QTcpSocket *clientSocket, bool success, const QString &message, QJsonObject userInfo) {
     QJsonObject response;
     response["type"] = "login";
     response["status"] = success ;
     response["message"] = message;
+    response["userinfo"] = userInfo;
 
     QJsonDocument doc(response);
     clientSocket->write(doc.toJson());

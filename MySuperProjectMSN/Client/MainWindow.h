@@ -41,6 +41,7 @@ private:
     ClientSocket *clientSocket;
     QStackedWidget *stackedWidget;
     void connectButtonToChatInterface();
+    QString username;
 };
 
 #endif // MAINWINDOW_H

@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Define initial page as LogIn
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentIndex(0);
 
     // Switch between pages: SignUp(1), Login(0), ChatInterface(2) and Profile (3)
     connectButtonToPage(ui->LogInPushButtonCreate, 0);

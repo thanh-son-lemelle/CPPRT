@@ -19,6 +19,10 @@ public:
     void sendMessage(const QString &message);
     void sendLoginRequest(QString email, QString password);
     void sendRegistrationRequest(QString firstName, QString lastName, QString email, QString password, QString username);
+    QString getUserEmail() const { return userEmail; }
+    QString getUserName() const { return userName; }
+    QString getUserFirstName() const { return userFirstName; }
+    QString getUserLastName() const { return userLastName; }
 
 signals:
     void messageReceived(const QString &message);
@@ -30,6 +34,7 @@ signals:
     void loginError();
     void registrationSuccess();
     void registrationError();
+    void userinformations();
 
 private slots:
     void onReadyRead();
@@ -44,6 +49,11 @@ private:
 
     void reconnectToServer();
     void handleServerResponse(const QByteArray &data);
+
+    QString userEmail;
+    QString userName;
+    QString userFirstName;
+    QString userLastName;
 };
 
 #endif // CLIENTSOCKET_H
