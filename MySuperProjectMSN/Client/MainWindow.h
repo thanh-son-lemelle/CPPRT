@@ -37,7 +37,8 @@ private slots:
     void onSigninClicked();
     void onEyePasswordReleased(QToolButton* eyeButton);
     void onEyePasswordPressed(QToolButton* eyeButton);
-    void onEye();
+    void onEyePen();
+    void editUserInfo(QPushButton *penButton);
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
@@ -45,6 +46,7 @@ private:
     void connectButtonToChatInterface();
     QString username;
     bool isPasswordVisible = false;
+    void displayInfoUserProfile();
 };
 
 #endif // MAINWINDOW_H

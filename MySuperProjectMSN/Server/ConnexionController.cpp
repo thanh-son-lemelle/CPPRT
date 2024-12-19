@@ -13,24 +13,20 @@ bool ConnexionController::validateCredentials(const QString& email, const QStrin
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
 
-    // Ouvre le fichier en mode lecture seule
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Failed to open file:" << filePath;
         return false;
     }
 
-    // Lit le contenu du fichier
     QByteArray jsonData = file.readAll();
     file.close();
 
-    // Analyse le document JSON
     QJsonDocument doc = QJsonDocument::fromJson(jsonData);
     if (!doc.isObject()) {
         qWarning() << "Invalid JSON format in file.";
         return false;
     }
 
-    // Extrait le tableau "users"
     QJsonObject rootObj = doc.object();
     if (!rootObj.contains("users") || !rootObj["users"].isArray()) {
         qWarning() << "No 'users' array found in JSON.";
@@ -39,7 +35,6 @@ bool ConnexionController::validateCredentials(const QString& email, const QStrin
 
     QJsonArray usersArray = rootObj["users"].toArray();
 
-    // Parcours des utilisateurs pour vérifier l'email et le mot de passe
     for (const QJsonValue& value : usersArray) {
         if (!value.isObject()) {
             continue;
@@ -51,12 +46,12 @@ bool ConnexionController::validateCredentials(const QString& email, const QStrin
 
         if (storedEmail == email && storedPassword == password) {
             qDebug() << "User authenticated successfully.";
-            return true;  // Match trouvé
+            return true;
         }
     }
 
     qDebug() << "Authentication failed: Invalid email or password.";
-    return false;  // Aucune correspondance trouvée
+    return false;
 }
 
 bool ConnexionController::isEmailExists(QString &email){
@@ -98,7 +93,6 @@ bool ConnexionController::isEmailExists(QString &email){
 
 void ConnexionController::saveUserInfo(const QJsonObject &userInfo) {
 
-    // If the file does not exist, create a new JSON file.
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
     if (!file.exists()) {
@@ -114,33 +108,20 @@ void ConnexionController::saveUserInfo(const QJsonObject &userInfo) {
         qDebug() << "File already exists.";
     }
 
-    // Create a JSON object with user information
-   /* userInfo = value.toObject();
-    userInfo["firstName"] = "John";
-    userInfo["lastName"] = "Doe";
-    userInfo["username"] = "johndoe123";
-    userInfo["email"] = "johndoe@example.com";
-    userInfo["password"] = "securepassword";
-    userInfo["userId"] = 1;*/
-
     // Open the file for reading and updating
     if (file.open(QIODevice::ReadWrite)) {
-        // Read the existing content of the file
         QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
         QJsonArray usersArray;
 
         if (doc.isObject() && doc.object().contains("users")) {
             usersArray = doc.object()["users"].toArray();
         }
-
-        // Add the new user to the users array
         usersArray.append(userInfo);
 
-        // Write the updated array back to the file
         QJsonObject root;
         root["users"] = usersArray;
         QJsonDocument updatedDoc(root);
-        file.resize(0);  // Clear the file before writing the updated data
+        file.resize(0);
         file.write(updatedDoc.toJson(QJsonDocument::Indented));
         file.close();
 

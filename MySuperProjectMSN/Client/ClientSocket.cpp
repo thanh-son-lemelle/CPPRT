@@ -100,6 +100,7 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
             userName = userInfo["username"].toString();
             userFirstName = userInfo["firstName"].toString();
             userLastName = userInfo["lastName"].toString();
+            userPassword = userInfo["password"].toString();
 
             qDebug() << "User Info:";
             qDebug() << "Email:" << userEmail;

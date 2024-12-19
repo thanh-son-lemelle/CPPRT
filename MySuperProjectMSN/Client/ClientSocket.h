@@ -23,6 +23,7 @@ public:
     QString getUserName() const { return userName; }
     QString getUserFirstName() const { return userFirstName; }
     QString getUserLastName() const { return userLastName; }
+    QString getUserPassword() const { return userPassword; }
 
 signals:
     void messageReceived(const QString &message);
@@ -54,6 +55,7 @@ private:
     QString userName;
     QString userFirstName;
     QString userLastName;
+    QString userPassword;
 };
 
 #endif // CLIENTSOCKET_H
