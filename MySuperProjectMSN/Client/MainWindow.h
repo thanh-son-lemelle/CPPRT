@@ -35,13 +35,16 @@ private slots:
     void connectButtonToPage(QAbstractButton* button, int pageIndex);
     void onLoginClicked();
     void onSigninClicked();
-
+    void onEyePasswordReleased(QToolButton* eyeButton);
+    void onEyePasswordPressed(QToolButton* eyeButton);
+    void onEye();
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
     QStackedWidget *stackedWidget;
     void connectButtonToChatInterface();
     QString username;
+    bool isPasswordVisible = false;
 };
 
 #endif // MAINWINDOW_H

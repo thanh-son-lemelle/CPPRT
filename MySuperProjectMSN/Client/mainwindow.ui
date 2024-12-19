@@ -113,7 +113,7 @@ border: 2px solid rgb(35, 35, 35);</string>
          <rect>
           <x>10</x>
           <y>5</y>
-          <width>581</width>
+          <width>521</width>
           <height>24</height>
          </rect>
         </property>
@@ -130,8 +130,40 @@ color: #676767;</string>
         <property name="text">
          <string/>
         </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
         <property name="placeholderText">
          <string>Password</string>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="EyePassword">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>4</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;backgroud-color: none;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="ressources.qrc">
+          <normaloff>:/client/assets/img/eye.png</normaloff>:/client/assets/img/eye.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </widget>
@@ -609,7 +641,7 @@ border: 2px solid rgb(35, 35, 35);</string>
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>581</width>
+          <width>541</width>
           <height>24</height>
          </rect>
         </property>
@@ -626,8 +658,41 @@ color: #676767;</string>
         <property name="text">
          <string/>
         </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
         <property name="placeholderText">
          <string>New Password</string>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="EyeNewPassword">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>5</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>BusyCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+backgroud-color: none;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="ressources.qrc">
+          <normaloff>:/client/assets/img/eye.png</normaloff>:/client/assets/img/eye.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </widget>
@@ -656,7 +721,7 @@ border: 2px solid rgb(35, 35, 35);</string>
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>581</width>
+          <width>541</width>
           <height>24</height>
          </rect>
         </property>
@@ -673,8 +738,41 @@ color: #676767;</string>
         <property name="text">
          <string/>
         </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
         <property name="placeholderText">
          <string>Confirm Password</string>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="EyeConfirmPassword">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>5</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+backgroud-color: none;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="ressources.qrc">
+          <normaloff>:/client/assets/img/eye.png</normaloff>:/client/assets/img/eye.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </widget>

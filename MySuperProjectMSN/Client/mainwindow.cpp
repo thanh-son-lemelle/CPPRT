@@ -1,10 +1,9 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    clientSocket(new ClientSocket(this))
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow),
+                                          clientSocket(new ClientSocket(this))
 {
     ui->setupUi(this);
 
@@ -38,67 +37,80 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->PasswordEdit, &QLineEdit::returnPressed, this, &MainWindow::onLoginClicked);
 
     connect(ui->CreateValidationPushButton, &QPushButton::clicked, this, &MainWindow::onSigninClicked);
+
+    // Toggle password visibility (show or hide)
+    onEye();
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow()
+{
     delete ui;
 }
 
-void MainWindow::onSendButtonClicked() {
+void MainWindow::onSendButtonClicked()
+{
     QString text = ui->messageTextEdit->toPlainText();
-    if (text.isEmpty()) return;
+    if (text.isEmpty())
+        return;
     QLabel *messageSentLabel = new QLabel(text);
     clientSocket->sendMessage(text);
     ui->messageTextEdit->clear();
 
     QHBoxLayout *messageLayout = new QHBoxLayout();
-    messageSentLabel->setContentsMargins(5,5,5,5);
-    messageLayout->setContentsMargins(10,-5,50,5);
+    messageSentLabel->setContentsMargins(5, 5, 5, 5);
+    messageLayout->setContentsMargins(10, -5, 50, 5);
     messageLayout->addWidget(messageSentLabel);
     messageLayout->setAlignment(messageSentLabel, Qt::AlignLeft);
     ui->ConversationFrameLayout->addLayout(messageLayout);
 }
 
-void MainWindow::onMessageReceived(const QString &message) {
+void MainWindow::onMessageReceived(const QString &message)
+{
     QLabel *messageLabel = new QLabel(message);
 
     QHBoxLayout *messageLayout = new QHBoxLayout();
-    messageLabel->setContentsMargins(5,5,5,5);
-    messageLayout->setContentsMargins(50,-5,10,5);
+    messageLabel->setContentsMargins(5, 5, 5, 5);
+    messageLayout->setContentsMargins(50, -5, 10, 5);
     messageLayout->addWidget(messageLabel);
     messageLayout->setAlignment(messageLabel, Qt::AlignRight);
 
     ui->ConversationFrameLayout->addLayout(messageLayout);
 }
 
-void MainWindow::onConnectionEstablished() {
+void MainWindow::onConnectionEstablished()
+{
     qDebug() << "Connected to server.";
 }
 
-void MainWindow::onConnectionClosed() {
+void MainWindow::onConnectionClosed()
+{
     qDebug() << "Disconnected from server.";
 }
 
-void MainWindow::onErrorOccurred(const QString &error) {
+void MainWindow::onErrorOccurred(const QString &error)
+{
     qDebug() << "Error: " << error;
 }
 
 // Switch to the desire page using the index page
-void MainWindow::connectButtonToPage(QAbstractButton* button, int pageIndex) {
-    connect(button, &QPushButton::clicked, this, [=]() {
-        ui->stackedWidget->setCurrentIndex(pageIndex);
-    });
+void MainWindow::connectButtonToPage(QAbstractButton *button, int pageIndex)
+{
+    connect(button, &QPushButton::clicked, this, [=]()
+            { ui->stackedWidget->setCurrentIndex(pageIndex); });
 }
 
-void MainWindow::connectButtonToChatInterface() {
-        ui->stackedWidget->setCurrentIndex(2);
+void MainWindow::connectButtonToChatInterface()
+{
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
-void MainWindow::onWizzClicked() {
+void MainWindow::onWizzClicked()
+{
     QSequentialAnimationGroup *shakeAnimation = new QSequentialAnimationGroup(this);
     QPoint originalPos = ui->ChatPanel->pos();
 
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 6; ++i)
+    {
         int offset = (i % 2 == 0) ? 10 : -10;
         QPropertyAnimation *shake = new QPropertyAnimation(ui->ChatPanel, "pos", this);
         shake->setDuration(100);
@@ -118,33 +130,85 @@ void MainWindow::onWizzClicked() {
     shakeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
-void MainWindow::onLoginClicked() {
+void MainWindow::onLoginClicked()
+{
 
-    QString email = ui->EmailEdit ->text();
-    QString password = ui->PasswordEdit ->text();
+    QString email = ui->EmailEdit->text();
+    QString password = ui->PasswordEdit->text();
 
-    if (email.isEmpty()|| password.isEmpty()) return;
-    clientSocket -> sendLoginRequest(email,password);
+    if (email.isEmpty() || password.isEmpty())
+        return;
+    clientSocket->sendLoginRequest(email, password);
 
-    //connectButtonToPage(ui->LoginValidationPushButton, 2);
+    // connectButtonToPage(ui->LoginValidationPushButton, 2);
 }
 
-void MainWindow::onSigninClicked() {
-
-    QString firstName = ui->FirstNamePlaceholder ->text();
-    QString lastName = ui->LastNamePlaceholder ->text();
+void MainWindow::onSigninClicked()
+{
+    QString firstName = ui->FirstNamePlaceholder->text();
+    QString lastName = ui->LastNamePlaceholder->text();
     QString username = ui->UsernamePlaceholder->text();
-    QString email = ui->EmailPlaceholder ->text();
+    QString email = ui->EmailPlaceholder->text();
     QString password = ui->PasswordPlaceholder->text();
     QString confirmPassword = ui->ConfirmPasswordPlaceholder->text();
 
-    if (email.isEmpty()|| password.isEmpty() || firstName.isEmpty()|| lastName.isEmpty()|| username.isEmpty()) {
+    if (email.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || username.isEmpty())
+    {
         qDebug() << "All fields must be completed.";
         return;
     };
-    if (password != confirmPassword){
+    if (password != confirmPassword)
+    {
         qDebug() << "Password doesn't match";
-            return;
+        return;
     }
-    clientSocket -> sendRegistrationRequest(firstName, lastName, email, password, username);
+    clientSocket->sendRegistrationRequest(firstName, lastName, email, password, username);
+}
+
+// Slot to shoow the password
+void MainWindow::onEyePasswordPressed(QToolButton *eyeButton)
+{
+    if (eyeButton == ui->EyePassword)
+    {
+        ui->PasswordEdit->setEchoMode(QLineEdit::Normal);
+    }
+    else if (eyeButton == ui->EyeNewPassword)
+    {
+        ui->PasswordPlaceholder->setEchoMode(QLineEdit::Normal);
+    }
+    else if (eyeButton == ui->EyeConfirmPassword)
+    {
+        ui->ConfirmPasswordPlaceholder->setEchoMode(QLineEdit::Normal);
+    }
+}
+
+// Slot to hide the password
+void MainWindow::onEyePasswordReleased(QToolButton *eyeButton)
+{
+    if (eyeButton == ui->EyePassword)
+    {
+        ui->PasswordEdit->setEchoMode(QLineEdit::Password);
+    }
+    else if (eyeButton == ui->EyeNewPassword)
+    {
+        ui->PasswordPlaceholder->setEchoMode(QLineEdit::Password);
+    }
+    else if (eyeButton == ui->EyeConfirmPassword)
+    {
+        ui->ConfirmPasswordPlaceholder->setEchoMode(QLineEdit::Password);
+    }
+}
+
+// Show or hide password depending on the eyePassword button
+void MainWindow::onEye()
+{
+    QList<QToolButton *> buttons = {ui->EyePassword, ui->EyeNewPassword, ui->EyeConfirmPassword};
+
+    for (QToolButton *button : buttons)
+    {
+        connect(button, &QToolButton::pressed, [this, button]()
+                { onEyePasswordPressed(button); });
+        connect(button, &QToolButton::released, [this, button]()
+                { onEyePasswordReleased(button); });
+    }
 }
