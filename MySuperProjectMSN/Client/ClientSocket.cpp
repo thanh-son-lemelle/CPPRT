@@ -2,12 +2,18 @@
 #include <QDebug>
 
 ClientSocket::ClientSocket(QObject *parent) : QObject(parent),
-                                              socket(new QTcpSocket(this))
+                                              socket(new QTcpSocket(this)),
+                                              reconnectTimer(new QTimer(this))
 {
     connect(socket, &QTcpSocket::readyRead, this, &ClientSocket::onReadyRead);
     connect(socket, &QTcpSocket::disconnected, this, &ClientSocket::onDisconnected);
     connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred),
             this, &ClientSocket::onErrorOccurred);
+
+    //
+    reconnectTimer->setInterval(2000);
+    reconnectTimer->setSingleShot(false);
+    connect(reconnectTimer, &QTimer::timeout, this, &ClientSocket::reconnectToServer);
 }
 
 ClientSocket::~ClientSocket() {}
@@ -24,6 +30,7 @@ void ClientSocket::connectToServer(const QString &host, quint16 port)
     if (socket->waitForConnected(3000))
     {
         qDebug() << "Connection established.";
+        reconnectTimer->stop();
         emit connectionEstablished();
     }
     else
@@ -37,10 +44,6 @@ void ClientSocket::onReadyRead()
 {
     QByteArray data = socket->readAll();
     handleServerResponse(data);
-    /*
-    QString message = QString::fromUtf8(data);
-    qDebug() << "Message received from server:" << message;
-    emit messageReceived(message);*/
 }
 
 void ClientSocket::onDisconnected()
@@ -50,10 +53,11 @@ void ClientSocket::onDisconnected()
     if (attemptReconnect)
     {
         qDebug() << "Attempting to reconnect...";
-        reconnectToServer();
+        reconnectTimer->start();
     }
 }
 
+// Throw error
 void ClientSocket::onErrorOccurred(QAbstractSocket::SocketError socketError)
 {
     Q_UNUSED(socketError)
@@ -62,12 +66,23 @@ void ClientSocket::onErrorOccurred(QAbstractSocket::SocketError socketError)
     emit errorOccurred(errorMsg);
 }
 
+// Attempt to reconnect to server if disconnected
 void ClientSocket::reconnectToServer()
 {
-    QThread::sleep(2);
-    qDebug() << "Reconnecting to" << hostAddress << "on port" << hostPort;
+    qDebug() << "Attempting to reconnect to" << hostAddress << "on port" << hostPort;
     socket->abort();
     socket->connectToHost(hostAddress, hostPort);
+
+    if (socket->waitForConnected(3000))
+    {
+        qDebug() << "Reconnection successful.";
+        reconnectTimer->stop();
+        emit connectionEstablished();
+    }
+    else
+    {
+        qDebug() << "Reconnection failed. Retrying...";
+    }
 }
 
 void ClientSocket::handleServerResponse(const QByteArray &data)
@@ -82,17 +97,22 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
     QJsonObject response = doc.object();
 
     QString type = response["type"].toString();
-    if (type == "message") {
+    if (type == "message")
+    {
         QString content = response["message"].toString();
         QString username = response["content"].toString();
         qDebug() << "Server message:" << content;
         emit messageReceived(response);
-    } else if (type == "registration") {
+    }
+    else if (type == "registration")
+    {
         bool status = response["status"].toBool();
         QString message = response["message"].toString();
         qDebug() << "Registration Status:" << status << "-" << message;
         (status == true) ? emit registrationSuccess() : emit loginError();
-    } else if (type == "login") {
+    }
+    else if (type == "login")
+    {
         bool status = response["status"].toBool();
         QString message = response["message"].toString();
         if (status)
@@ -115,8 +135,9 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
         {
             emit loginError();
         }
-
-    } else {
+    }
+    else
+    {
         qWarning() << "Unknown response type:" << type;
     }
 }

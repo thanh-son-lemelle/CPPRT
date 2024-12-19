@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QTimer>
 
 class ClientSocket : public QObject
 {
@@ -54,6 +55,8 @@ private:
     QString userName;
     QString userFirstName;
     QString userLastName;
+
+    QTimer *reconnectTimer;
 };
 
 #endif // CLIENTSOCKET_H
