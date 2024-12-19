@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 SUBDIRS += Client \
            Server \
-           Tests \
+    Tests
 

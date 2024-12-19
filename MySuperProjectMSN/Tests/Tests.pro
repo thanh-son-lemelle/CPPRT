@@ -1,18 +1,17 @@
-include(gtest_dependency.pri)
+QT += testlib
+QT += gui network
+CONFIG += qt warn_on depend_includepath testcase testlib
+
+DEPENDPATH += ../Server
 
 TEMPLATE = app
-CONFIG += console c++14
-CONFIG -= app_bundle
-CONFIG += thread
-CONFIG -= qt
 
-INCLUDEPATH += $$PWD/googletest/googletest/include
-INCLUDEPATH += $$PWD/googletest/googlemock/include
+SOURCES +=  tst_testload.cpp
 
-# Ajouter les fichiers sources de Google Test
-SOURCES += $$PWD/googletest/googletest/src/gtest-all.cc
-SOURCES += $$PWD/googletest/googlemock/src/gmock-all.cc
+INCLUDEPATH += ../Server
 
-SOURCES += \
-        main.cpp \
-        tst_loadtest.cpp
+DISTFILES += \
+    tst_servertest.qml
+
+SOURCES += ../Server/server.cpp
+HEADERS += ../Server/server.h

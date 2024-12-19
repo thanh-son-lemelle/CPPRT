@@ -2,7 +2,7 @@
 #include <QDebug>
 
 Server::Server(QObject *parent) : QTcpServer(parent) {
-    qDebug() << "Server initialized.";
+    qDebug() << "Server initialized." << serverAddress() << serverPort();
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {
@@ -12,7 +12,8 @@ void Server::incomingConnection(qintptr socketDescriptor) {
         clients.append(clientSocket);
         connect(clientSocket, &QTcpSocket::readyRead, this, &Server::onReadyRead);
         connect(clientSocket, &QTcpSocket::disconnected, this, &Server::onClientDisconnected);
-        qDebug() << "Client connected successfully.";
+        qDebug() << "Client connected successfully." << serverAddress()<< serverPort() ;
+        qDebug() <<"clientSocket size : " << clients.size();
     } else {
         qDebug() << "Failed to set socket descriptor.";
         delete clientSocket;
