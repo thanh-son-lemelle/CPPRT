@@ -27,9 +27,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(clientSocket, &ClientSocket::loginSuccess, this, &MainWindow::connectButtonToChatInterface);
     connect(clientSocket, &ClientSocket::registrationSuccess, this, &MainWindow::connectButtonToChatInterface);
     connect(ui->Wizz, &QToolButton::clicked, this, &MainWindow::onWizzClicked);
-    clientSocket->connectToServer("127.0.0.1", 1234);
+    clientSocket->connectToServer("10.10.11.20", 2512);
 
-    ui->ConversationFrameLayout->setAlignment(Qt::AlignBottom);
+    // Dans le constructeur de MainWindow
+    QStandardItemModel *model = new QStandardItemModel(this);
+    ui->ConversationList->setModel(model);
+    ui->ConversationList->scrollToBottom();
 
     // Send email and password to server
     connect(ui->LoginValidationPushButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
@@ -50,36 +53,31 @@ MainWindow::~MainWindow()
 void MainWindow::onSendButtonClicked()
 {
     QString text = ui->messageTextEdit->toPlainText();
-    if (text.isEmpty())
-        return;
-    QLabel *messageSentLabel = new QLabel(text);
+    if (text.isEmpty()) return;
     clientSocket->sendMessage(text);
-    ui->messageTextEdit->clear();
 
-    QHBoxLayout *messageLayout = new QHBoxLayout();
-    messageSentLabel->setContentsMargins(5, 5, 5, 5);
-    messageLayout->setContentsMargins(10, -5, 50, 5);
-    messageLayout->addWidget(messageSentLabel);
-    messageLayout->setAlignment(messageSentLabel, Qt::AlignLeft);
-    ui->ConversationFrameLayout->addLayout(messageLayout);
+    QStandardItem *sentItem = createMessageItem(text, true);
+    QStandardItemModel *model = qobject_cast<QStandardItemModel *>(ui->ConversationList->model());
+    model->appendRow(sentItem);
+
+    ui->messageTextEdit->clear();
+    ui->ConversationList->scrollToBottom();
 }
+
 
 void MainWindow::onMessageReceived(const QJsonObject &object)
 {
-
     QString username = object["username"].toString();
     QString message = object["message"].toString();
-    QLabel *messageLabel = new QLabel(username + "\n" + message);
 
-    QHBoxLayout *messageLayout = new QHBoxLayout();
-    messageLabel->setContentsMargins(5, 5, 5, 5);
-    messageLayout->setContentsMargins(50, -5, 10, 5);
-    messageLayout->addWidget(messageLabel);
-    messageLayout->setAlignment(messageLabel, Qt::AlignRight);
+    QString fullMessage = username + "\n" + message;
+    QStandardItem *receivedItem = createMessageItem(fullMessage, false);
+    QStandardItemModel *model = qobject_cast<QStandardItemModel *>(ui->ConversationList->model());
+    model->appendRow(receivedItem);
 
-    ui->ConversationFrameLayout->addLayout(messageLayout);
-    qDebug() << messageLabel;
+    ui->ConversationList->scrollToBottom();
 }
+
 
 void MainWindow::onConnectionEstablished()
 {
@@ -215,4 +213,15 @@ void MainWindow::onEye()
         connect(button, &QToolButton::released, [this, button]()
                 { onEyePasswordReleased(button); });
     }
+}
+
+QStandardItem* MainWindow::createMessageItem(const QString &message, bool sent) {
+    QStandardItem *item = new QStandardItem(message);
+
+    if (sent) {
+        item->setTextAlignment(Qt::AlignLeft);
+    } else {
+        item->setTextAlignment(Qt::AlignRight);
+    }
+    return item;
 }

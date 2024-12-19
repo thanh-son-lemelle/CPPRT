@@ -10,6 +10,7 @@
 #include <QToolButton>
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -45,6 +46,7 @@ private:
     void connectButtonToChatInterface();
     QString username;
     bool isPasswordVisible = false;
+    QStandardItem* createMessageItem(const QString &message, bool sent);
 };
 
 #endif // MAINWINDOW_H

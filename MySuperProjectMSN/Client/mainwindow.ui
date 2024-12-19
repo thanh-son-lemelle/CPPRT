@@ -30,7 +30,7 @@
      <string notr="true">background-color: #0B0B12;</string>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="LogIn">
      <widget class="QWidget" name="SignUpPanel" native="true">
@@ -150,7 +150,8 @@ color: #676767;</string>
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
-         <string notr="true">border: none;backgroud-color: none;</string>
+         <string notr="true">border: none;
+background-color: transparent;</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -679,7 +680,7 @@ color: #676767;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border: none;
-backgroud-color: none;</string>
+background-color: transparent;</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -759,7 +760,7 @@ color: #676767;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border: none;
-backgroud-color: none;</string>
+background-color: none;</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -1436,7 +1437,10 @@ border: 2px solid rgb(35, 35, 35);</string>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QWidget" name="verticalLayoutWidget_2">
+       <widget class="QListView" name="ConversationList">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -1445,24 +1449,7 @@ border: 2px solid rgb(35, 35, 35);</string>
           <height>431</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="ConversationFrameLayout"/>
        </widget>
-      </widget>
-      <widget class="QScrollBar" name="ScrollBar">
-       <property name="geometry">
-        <rect>
-         <x>490</x>
-         <y>20</y>
-         <width>20</width>
-         <height>391</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: #151718;</string>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
       </widget>
       <widget class="QWidget" name="OptionsChat" native="true">
        <property name="geometry">
@@ -1719,6 +1706,25 @@ li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:700;&quot;&gt;Alicia Cordial&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+      <widget class="QScrollBar" name="ScrollBar">
+       <property name="geometry">
+        <rect>
+         <x>490</x>
+         <y>30</y>
+         <width>16</width>
+         <height>421</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: #151718;</string>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="setVisible" stdset="0">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
