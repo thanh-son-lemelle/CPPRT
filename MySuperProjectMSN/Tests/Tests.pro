@@ -1,5 +1,5 @@
 QT += testlib
-QT += gui network
+QT += network
 CONFIG += qt warn_on depend_includepath testcase testlib
 
 DEPENDPATH += ../Server

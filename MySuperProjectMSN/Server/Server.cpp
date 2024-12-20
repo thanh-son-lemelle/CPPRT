@@ -1,8 +1,15 @@
 #include "server.h"
 #include <QDebug>
 
-Server::Server(QObject *parent) : QTcpServer(parent) {
-    qDebug() << "Server initialized." << serverAddress() << serverPort();
+Server::Server(QObject *parent) : QTcpServer(parent) {}
+
+void Server::startServer(const QString &address, quint16 port) {
+    const QHostAddress hostAddress(address);
+    if (this->listen(hostAddress, port)) {
+        qDebug() << "Server started at" << address << ":" << port;
+    } else {
+        qDebug() << "Server failed to start:" << this->errorString();
+    }
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {

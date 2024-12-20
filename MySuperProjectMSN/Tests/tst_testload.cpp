@@ -5,26 +5,29 @@
 class TestLoad : public QObject {
     Q_OBJECT
 
-private:
-    Server *server;
-    quint16 port;
+    private:
+        Server *server;
+        quint16 port;
 
-private slots:
-    void initTestCase();
-    void cleanupTestCase();
+    private slots:
+        void initTestCase();
+        void cleanupTestCase();
 
-    // Test cases
-    void test_multipleClientsConnectAndDisconnect();
-    void test_invalidConnectionHandling();
-    void test_maliciousConnectionLimiting();
+        // Test cases
+        void test_multipleClientsConnectAndDisconnect();
+        void test_invalidConnectionHandling();
+        void test_maliciousConnectionLimiting();
 };
 
 void TestLoad::initTestCase() {
-    server = new Server();
-    QVERIFY(server->listen(QHostAddress::LocalHost, 1234));
-    port = server->serverPort();
-    QVERIFY(port > 0);
-    qDebug() << "Server listening on port:" << port;
+    const QString validAddress = "127.0.0.1";
+    const quint16 validPort = 12345;
+
+    server->startServer(validAddress, validPort);
+
+    QVERIFY(server->isListening());
+    QCOMPARE(server->serverAddress().toString(), validAddress);
+    QCOMPARE(server->serverPort(), validPort);
 }
 
 void TestLoad::cleanupTestCase() {
@@ -39,7 +42,7 @@ void TestLoad::test_multipleClientsConnectAndDisconnect() {
     for (int i = 0; i < clientCount; ++i) {
         QTcpSocket *client = new QTcpSocket(this);
         qDebug() << "server listening on port: "<< server->serverAddress() <<server->serverPort();
-        client->connectToHost("127.0.0.1", 1234);
+        client->connectToHost(QHostAddress::Any, 1234);
         qDebug() << server->clients.size();
         QVERIFY(client->waitForConnected(1000));
         clients.append(client);
@@ -49,28 +52,28 @@ void TestLoad::test_multipleClientsConnectAndDisconnect() {
     QCOMPARE(server->clients.size(), clientCount);
 
 
-    // for (QTcpSocket *client : clients) {
-    //     client->disconnectFromHost();
-    //     QVERIFY(client->waitForDisconnected(10000));
-    //     delete client;
-    // }
+    for (QTcpSocket *client : clients) {
+        client->disconnectFromHost();
+        QVERIFY(client->waitForDisconnected(10000));
+        delete client;
+    }
 
-    // QTest::qWait(100);
-    // QCOMPARE(server->clients.size(), 0);
+    QTest::qWait(100);
+    QCOMPARE(server->clients.size(), 0);
 }
 
 void TestLoad::test_invalidConnectionHandling() {
-//     QTcpSocket client;
-//     client.connectToHost("invalid.host", port);
-//     QVERIFY(!client.waitForConnected(1000));
+    QTcpSocket client;
+    client.connectToHost("invalid.host", port);
+    QVERIFY(!client.waitForConnected(1000));
 
-//     QTcpSocket closedClient;
-//     closedClient.connectToHost(QHostAddress::LocalHost, port);
-//     QVERIFY(closedClient.waitForConnected(1000));
-//     closedClient.close();
+    QTcpSocket closedClient;
+    closedClient.connectToHost(QHostAddress::LocalHost, port);
+    QVERIFY(closedClient.waitForConnected(1000));
+    closedClient.close();
 
-//     QTest::qWait(100);
-//     QCOMPARE(server->clients.size(), 0);
+    QTest::qWait(100);
+    QCOMPARE(server->clients.size(), 0);
 }
 
 void TestLoad::test_maliciousConnectionLimiting() {
