@@ -49,6 +49,7 @@ private:
     bool attemptReconnect;
     QTcpSocket *socket;
 
+    void attemptInitialConnection();
     void reconnectToServer();
     void handleServerResponse(const QByteArray &data);
 
@@ -59,6 +60,8 @@ private:
     QString userPassword;
 
     QTimer *reconnectTimer;
+    QTimer *initialConnectionTimer;
+
 };
 
 #endif // CLIENTSOCKET_H

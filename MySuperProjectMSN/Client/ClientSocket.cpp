@@ -3,14 +3,20 @@
 
 ClientSocket::ClientSocket(QObject *parent) : QObject(parent),
                                               socket(new QTcpSocket(this)),
-                                              reconnectTimer(new QTimer(this))
+                                              reconnectTimer(new QTimer(this)),
+                                              initialConnectionTimer(new QTimer(this))
 {
     connect(socket, &QTcpSocket::readyRead, this, &ClientSocket::onReadyRead);
     connect(socket, &QTcpSocket::disconnected, this, &ClientSocket::onDisconnected);
     connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred),
             this, &ClientSocket::onErrorOccurred);
 
-    //
+    // Timer to handle first server conection
+    initialConnectionTimer->setInterval(2000);
+    initialConnectionTimer->setSingleShot(false);
+    connect(initialConnectionTimer, &QTimer::timeout, this, &ClientSocket::attemptInitialConnection);
+
+    // Timer to handle server reconection
     reconnectTimer->setInterval(2000);
     reconnectTimer->setSingleShot(false);
     connect(reconnectTimer, &QTimer::timeout, this, &ClientSocket::reconnectToServer);
@@ -24,19 +30,25 @@ void ClientSocket::connectToServer(const QString &host, quint16 port)
     hostPort = port;
     attemptReconnect = true;
 
-    qDebug() << "Attempting to connect to server at" << host << "on port" << port;
-    socket->connectToHost(host, port);
+    qDebug() << "Starting initial connection attempts to server at" << host << "on port" << port;
+    initialConnectionTimer->start();
+}
+
+void ClientSocket::attemptInitialConnection()
+{
+    qDebug() << "Attempting to connect to" << hostAddress << "on port" << hostPort;
+    socket->abort();
+    socket->connectToHost(hostAddress, hostPort);
 
     if (socket->waitForConnected(3000))
     {
         qDebug() << "Connection established.";
-        reconnectTimer->stop();
+        initialConnectionTimer->stop();
         emit connectionEstablished();
     }
     else
     {
-        qDebug() << "Failed to connect to server:" << socket->errorString();
-        emit errorOccurred(socket->errorString());
+        qDebug() << "Connection attempt failed. Retrying...";
     }
 }
 

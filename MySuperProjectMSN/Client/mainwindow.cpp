@@ -308,6 +308,7 @@ void MainWindow::displayInvalidPasswordEmail(){
     ui->WarningLogin->setVisible(true);
 }
 
+//
 QStandardItem* MainWindow::createMessageItem(const QString &message, bool sent) {
     QStandardItem *item = new QStandardItem(message);
 
