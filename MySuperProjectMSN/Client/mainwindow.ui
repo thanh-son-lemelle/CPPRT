@@ -27,10 +27,11 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #0B0B12;</string>
+     <string notr="true">background-color: #0B0B12;
+</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="LogIn">
      <widget class="QWidget" name="SignUpPanel" native="true">
@@ -45,7 +46,8 @@
       <property name="styleSheet">
        <string notr="true">background-color: rgb(15, 15, 15);
 border-radius: 15px;
-border: 2px solid rgb(35, 35, 35);</string>
+border: none;
+</string>
       </property>
       <widget class="QWidget" name="InputEmailCo" native="true">
        <property name="geometry">
@@ -151,7 +153,7 @@ color: #676767;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border: none;
-background-color: transparent;</string>
+background-color: none;</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -390,30 +392,86 @@ border-radius: 5px;</string>
         <string>Forgot Password ?</string>
        </property>
       </widget>
-      <widget class="QLabel" name="OrSignInWith_2">
+      <widget class="QFrame" name="WarningLogin">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>130</y>
-         <width>261</width>
-         <height>31</height>
+         <y>89</y>
+         <width>600</width>
+         <height>51</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <family>Tahoma</family>
-         <pointsize>8</pointsize>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="styleSheet">
-        <string notr="true">border: none;
+        <string notr="true">border-radius: 5px;
+background-color: #372226;
+border: 1px solid #ee554d;
+display: none;</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="OrSignInWith_2">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>10</y>
+          <width>261</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Tahoma</family>
+          <pointsize>9</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+border-radius: 3px;
 background-color: none;
 </string>
-       </property>
-       <property name="text">
-        <string>Invalid password or email</string>
-       </property>
+        </property>
+        <property name="text">
+         <string>Oops ! Invalid password or email</string>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="Warning">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>10</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+background-color: none;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="ressources.qrc">
+          <normaloff>:/client/assets/img/warning.png</normaloff>:/client/assets/img/warning.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>
@@ -680,7 +738,7 @@ color: #676767;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">border: none;
-background-color: transparent;</string>
+background-color: none;</string>
         </property>
         <property name="text">
          <string>...</string>
@@ -1730,7 +1788,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </widget>
     </widget>
     <widget class="QWidget" name="EditProfilePage">
-     <widget class="QWidget" name="LoginPanel_2" native="true">
+     <widget class="QWidget" name="EditPanel" native="true">
       <property name="geometry">
        <rect>
         <x>135</x>
@@ -1749,7 +1807,7 @@ border: 2px solid rgb(35, 35, 35);</string>
         <rect>
          <x>100</x>
          <y>110</y>
-         <width>290</width>
+         <width>260</width>
          <height>40</height>
         </rect>
        </property>
@@ -1769,7 +1827,7 @@ border: 2px solid rgb(35, 35, 35);</string>
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>271</width>
+          <width>240</width>
           <height>24</height>
          </rect>
         </property>
@@ -1784,10 +1842,16 @@ border: 2px solid rgb(35, 35, 35);</string>
 color: #676767;</string>
         </property>
         <property name="text">
-         <string>Name</string>
+         <string/>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Normal</enum>
         </property>
         <property name="readOnly">
-         <bool>false</bool>
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>Name</string>
         </property>
        </widget>
       </widget>
@@ -1837,9 +1901,9 @@ border: 1px solid rgb(35, 35, 35);</string>
       <widget class="QFrame" name="InputLastNameAccount">
        <property name="geometry">
         <rect>
-         <x>410</x>
+         <x>440</x>
          <y>110</y>
-         <width>290</width>
+         <width>260</width>
          <height>40</height>
         </rect>
        </property>
@@ -1859,7 +1923,7 @@ border: 2px solid rgb(35, 35, 35);</string>
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>271</width>
+          <width>241</width>
           <height>24</height>
          </rect>
         </property>
@@ -1874,45 +1938,13 @@ border: 2px solid rgb(35, 35, 35);</string>
 color: #676767;</string>
         </property>
         <property name="text">
+         <string/>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
          <string>Last name</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="InputPseudoAccount" native="true">
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>180</y>
-         <width>600</width>
-         <height>40</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(21, 23, 24);
-border-radius: 5px;
-border: 2px solid rgb(35, 35, 35);</string>
-       </property>
-       <widget class="QLineEdit" name="PseudoPlaceholderAccount">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>581</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Tahoma</family>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">border: none;
-color: #676767;</string>
-        </property>
-        <property name="text">
-         <string>Pseudo</string>
         </property>
        </widget>
       </widget>
@@ -1956,6 +1988,12 @@ border: 2px solid rgb(35, 35, 35);</string>
 color: #676767;</string>
         </property>
         <property name="text">
+         <string/>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
          <string>E-mail address</string>
         </property>
        </widget>
@@ -1980,12 +2018,12 @@ border: 2px solid rgb(35, 35, 35);</string>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QLineEdit" name="NamePlaceholderAccount">
+       <widget class="QLineEdit" name="PasswordPlaceholderAccount">
         <property name="geometry">
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>581</width>
+          <width>481</width>
           <height>24</height>
          </rect>
         </property>
@@ -1995,12 +2033,54 @@ border: 2px solid rgb(35, 35, 35);</string>
           <pointsize>9</pointsize>
          </font>
         </property>
+        <property name="cursor">
+         <cursorShape>ArrowCursor</cursorShape>
+        </property>
         <property name="styleSheet">
          <string notr="true">border: none;
 color: #676767;</string>
         </property>
         <property name="text">
+         <string/>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
          <string>Password</string>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="EyePasswordAccount">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>5</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+background-color: none;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="ressources.qrc">
+          <normaloff>:/client/assets/img/eye.png</normaloff>:/client/assets/img/eye.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
        </widget>
       </widget>
@@ -2032,7 +2112,7 @@ background-color: none;
       <widget class="QLabel" name="TextLastNameAccount">
        <property name="geometry">
         <rect>
-         <x>415</x>
+         <x>445</x>
          <y>85</y>
          <width>81</width>
          <height>31</height>
@@ -2177,95 +2257,17 @@ border-radius: 5px;</string>
         <string>My Account</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="LastNamepushButton">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>110</y>
-         <width>41</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border: none;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="ressources.qrc">
-         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>23</width>
-         <height>23</height>
-        </size>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="PseudoPushButton">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>180</y>
-         <width>41</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border: none;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="ressources.qrc">
-         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>23</width>
-         <height>23</height>
-        </size>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>250</y>
-         <width>41</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border: none;
-</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="ressources.qrc">
-         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>23</width>
-         <height>23</height>
-        </size>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="PenEditLastName">
        <property name="geometry">
         <rect>
          <x>700</x>
-         <y>320</y>
+         <y>120</y>
          <width>41</width>
          <height>31</height>
         </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="styleSheet">
         <string notr="true">border: none;
@@ -2284,6 +2286,176 @@ border-radius: 5px;</string>
          <height>23</height>
         </size>
        </property>
+      </widget>
+      <widget class="QPushButton" name="PenEditUsername">
+       <property name="geometry">
+        <rect>
+         <x>700</x>
+         <y>185</y>
+         <width>41</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: none;
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="ressources.qrc">
+         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>23</width>
+         <height>23</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="PenEditEmail">
+       <property name="geometry">
+        <rect>
+         <x>700</x>
+         <y>255</y>
+         <width>41</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: none;
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="ressources.qrc">
+         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>23</width>
+         <height>23</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="PenEditPassword">
+       <property name="geometry">
+        <rect>
+         <x>700</x>
+         <y>325</y>
+         <width>41</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: none;
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="ressources.qrc">
+         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>23</width>
+         <height>23</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="PenEditFirstName">
+       <property name="geometry">
+        <rect>
+         <x>360</x>
+         <y>120</y>
+         <width>41</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: none;
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="ressources.qrc">
+         <normaloff>:/client/assets/img/pen.png</normaloff>:/client/assets/img/pen.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>23</width>
+         <height>23</height>
+        </size>
+       </property>
+      </widget>
+      <widget class="QFrame" name="InputUsernameAccount">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>180</y>
+         <width>600</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(21, 23, 24);
+border-radius: 5px;
+border: 2px solid rgb(35, 35, 35);</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLineEdit" name="UsernamePlaceholderAccount">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>581</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Tahoma</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+color: #676767;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>Pseudo</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>

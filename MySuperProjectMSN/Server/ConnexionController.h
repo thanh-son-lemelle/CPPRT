@@ -17,8 +17,6 @@ public:
     void static saveUserInfo(const QJsonObject &userInfo);
     QJsonObject static getUserInfo(const QString &email);
 
-    // bool static validateCredentials(const QString& email, const QString& password);
-
 protected:
 
 private:

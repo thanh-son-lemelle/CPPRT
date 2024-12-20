@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow),
@@ -17,19 +18,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connectButtonToPage(ui->BtnDisconnect, 0);
     connectButtonToPage(ui->BtnQuitProfile, 2);
     connectButtonToPage(ui->SubmitAccountPushButton, 2);
-    // connectButtonToPage(ui->CreateValidationPushButton, 0);
 
+    // Send message or Wizz on Chat Interface page
     connect(ui->sendButton, &QPushButton::clicked, this, &MainWindow::onSendButtonClicked);
+    connect(ui->Wizz, &QToolButton::clicked, this, &MainWindow::onWizzClicked);
+
+    // ClientSocket signal listener
     connect(clientSocket, &ClientSocket::messageReceived, this, &MainWindow::onMessageReceived);
     connect(clientSocket, &ClientSocket::connectionEstablished, this, &MainWindow::onConnectionEstablished);
     connect(clientSocket, &ClientSocket::connectionClosed, this, &MainWindow::onConnectionClosed);
     connect(clientSocket, &ClientSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
     connect(clientSocket, &ClientSocket::loginSuccess, this, &MainWindow::connectButtonToChatInterface);
+    connect(clientSocket, &ClientSocket::loginError, this, &MainWindow::displayInvalidPasswordEmail);
     connect(clientSocket, &ClientSocket::registrationSuccess, this, &MainWindow::connectButtonToChatInterface);
-    connect(ui->Wizz, &QToolButton::clicked, this, &MainWindow::onWizzClicked);
-    clientSocket->connectToServer("10.10.11.20", 2512);
+    clientSocket->connectToServer("127.0.0.1", 2512);
 
-    // Dans le constructeur de MainWindow
     QStandardItemModel *model = new QStandardItemModel(this);
     ui->ConversationList->setModel(model);
     ui->ConversationList->scrollToBottom();
@@ -39,10 +42,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->EmailEdit, &QLineEdit::returnPressed, this, &MainWindow::onLoginClicked);
     connect(ui->PasswordEdit, &QLineEdit::returnPressed, this, &MainWindow::onLoginClicked);
 
+    // Sender user info to Server
     connect(ui->CreateValidationPushButton, &QPushButton::clicked, this, &MainWindow::onSigninClicked);
 
     // Toggle password visibility (show or hide)
-    onEye();
+    onEyePen();
+
+    // Hide warning message for invalid password or email
+    ui->WarningLogin->setVisible(false);
+
 }
 
 MainWindow::~MainWindow()
@@ -97,13 +105,22 @@ void MainWindow::onErrorOccurred(const QString &error)
 // Switch to the desire page using the index page
 void MainWindow::connectButtonToPage(QAbstractButton *button, int pageIndex)
 {
-    connect(button, &QPushButton::clicked, this, [=]()
-            { ui->stackedWidget->setCurrentIndex(pageIndex); });
+    connect(button, &QPushButton::clicked, this, [=](){
+        ui->stackedWidget->setCurrentIndex(pageIndex);
+    });
 }
 
 void MainWindow::connectButtonToChatInterface()
 {
+    ui->WarningLogin->setVisible(false);
+    ui->EmailEdit->text() = "";
+    ui->PasswordEdit->text() = "";
     ui->stackedWidget->setCurrentIndex(2);
+    // Display user name on chat interface
+    ui->UserPseudo->setText(clientSocket->getUserName());
+
+    // Display user info on profile page
+    displayInfoUserProfile();
 }
 
 void MainWindow::onWizzClicked()
@@ -134,15 +151,12 @@ void MainWindow::onWizzClicked()
 
 void MainWindow::onLoginClicked()
 {
-
     QString email = ui->EmailEdit->text();
     QString password = ui->PasswordEdit->text();
 
     if (email.isEmpty() || password.isEmpty())
         return;
     clientSocket->sendLoginRequest(email, password);
-
-    // connectButtonToPage(ui->LoginValidationPushButton, 2);
 }
 
 void MainWindow::onSigninClicked()
@@ -182,6 +196,10 @@ void MainWindow::onEyePasswordPressed(QToolButton *eyeButton)
     {
         ui->ConfirmPasswordPlaceholder->setEchoMode(QLineEdit::Normal);
     }
+    else if (eyeButton == ui->EyePasswordAccount)
+    {
+        ui->PasswordPlaceholderAccount->setEchoMode(QLineEdit::Normal);
+    }
 }
 
 // Slot to hide the password
@@ -199,20 +217,95 @@ void MainWindow::onEyePasswordReleased(QToolButton *eyeButton)
     {
         ui->ConfirmPasswordPlaceholder->setEchoMode(QLineEdit::Password);
     }
+    else if (eyeButton == ui->EyePasswordAccount)
+    {
+        ui->PasswordPlaceholderAccount->setEchoMode(QLineEdit::Password);
+    }
+
 }
 
 // Show or hide password depending on the eyePassword button
-void MainWindow::onEye()
-{
-    QList<QToolButton *> buttons = {ui->EyePassword, ui->EyeNewPassword, ui->EyeConfirmPassword};
+void MainWindow::onEyePen(){
+    QList<QToolButton *> buttons = {
+        ui->EyePassword,
+        ui->EyeNewPassword,
+        ui->EyeConfirmPassword,
+        ui->EyePasswordAccount
+    };
 
-    for (QToolButton *button : buttons)
-    {
-        connect(button, &QToolButton::pressed, [this, button]()
-                { onEyePasswordPressed(button); });
-        connect(button, &QToolButton::released, [this, button]()
-                { onEyePasswordReleased(button); });
+        for (QToolButton *button : buttons)
+        {
+            connect(button, &QToolButton::pressed, [this, button]() {
+                onEyePasswordPressed(button);
+            });
+            connect(button, &QToolButton::released, [this, button]() {
+                onEyePasswordReleased(button);
+            });
     }
+        QList<QPushButton *> buttonsPen = {
+            ui->PenEditFirstName,
+            ui->PenEditLastName,
+            ui->PenEditUsername,
+            ui->PenEditEmail,
+            ui->PenEditPassword
+        };
+        for(QPushButton *button: buttonsPen){
+            connect(button, &QToolButton::clicked, [this, button]() {
+                editUserInfo(button);
+            });
+    }
+}
+
+void MainWindow::displayInfoUserProfile(){
+    ui->FirstNamePlaceholderAccount->setText(clientSocket->getUserFirstName());
+    ui->LastNamePlaceholderAccount->setText(clientSocket->getUserLastName());
+    ui->UsernamePlaceholderAccount->setText(clientSocket->getUserName());
+    ui->EmailPlaceholderAccount->setText(clientSocket->getUserEmail());
+    ui->PasswordPlaceholderAccount->setText(clientSocket->getUserPassword());
+}
+
+void MainWindow::editUserInfo(QPushButton *penButton)
+{
+    // Define styles for read-only and editable states
+    QString initBorder = "background-color: rgb(21, 23, 24); border-radius: 5px; border: 2px solid rgb(35, 35, 35);";
+    QString editBorder = "background-color: rgb(21, 23, 24); border-radius: 5px; border: 2px solid rgb(255, 255, 255);";
+
+    // List of buttons and corresponding QLineEdits
+    QList<QPushButton *> buttonsPen = {
+        ui->PenEditFirstName,
+        ui->PenEditLastName,
+        ui->PenEditUsername,
+        ui->PenEditEmail,
+        ui->PenEditPassword
+    };
+    QList<QLineEdit *> userPlaceholders = {
+        ui->FirstNamePlaceholderAccount,
+        ui->LastNamePlaceholderAccount,
+        ui->UsernamePlaceholderAccount,
+        ui->EmailPlaceholderAccount,
+        ui->PasswordPlaceholderAccount
+    };
+    QList<QFrame *> userInputs = {
+        ui->InputFirstNameAccount,
+        ui->InputLastNameAccount,
+        ui->InputUsernameAccount,
+        ui->InputEmailAccount,
+        ui->InputPasswordAccount
+    };
+
+    // Iterate through the buttons to find the corresponding QLineEdit
+    for (int i = 0; i < buttonsPen.size(); ++i) {
+        if (penButton == buttonsPen[i]) {
+            bool isReadOnly = userPlaceholders[i]->isReadOnly();
+            userPlaceholders[i]->setReadOnly(!isReadOnly);
+            userInputs[i]->setStyleSheet(isReadOnly ? editBorder : initBorder);
+            break;
+        }
+    }
+}
+
+void MainWindow::displayInvalidPasswordEmail(){
+    ui->WarningLogin->setVisible(true);
 }
 
 QStandardItem* MainWindow::createMessageItem(const QString &message, bool sent) {
