@@ -148,9 +148,14 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
         {
             emit loginError();
         }
+
+    } else if (type == "allUsers"){
+        // qDebug() << data;
+        QJsonObject userinfo = response["userinfo"].toObject();
+        emit fetchAllUserInfo(userinfo);
     }
-    else
-    {
+
+    else {
         qWarning() << "Unknown response type:" << type;
     }
 }

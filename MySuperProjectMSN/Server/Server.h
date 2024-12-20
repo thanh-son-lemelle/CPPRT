@@ -24,6 +24,7 @@ private:
     void sendMessage (QTcpSocket *clientSocket, const QString &message);
     void sendRegistrationResponse(QTcpSocket *clientSocket, bool success, const QString &message);
     void sendLoginResponse(QTcpSocket *clientSocket, bool success, const QString &message, QJsonObject userInfo);
+    void sendAllUsersResponse(QTcpSocket *clientSocket, const QString &message, QJsonObject allUsersInfo);
 
 };
 
