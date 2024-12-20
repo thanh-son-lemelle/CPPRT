@@ -1,13 +1,11 @@
 #include "ClientSocket.h"
 #include <QDebug>
 
-ClientSocket::ClientSocket(QObject *parent) : QObject(parent),
-                                              socket(new QTcpSocket(this))
+ClientSocket::ClientSocket(QObject *parent) : QObject(parent), socket(new QTcpSocket(this))
 {
     connect(socket, &QTcpSocket::readyRead, this, &ClientSocket::onReadyRead);
     connect(socket, &QTcpSocket::disconnected, this, &ClientSocket::onDisconnected);
-    connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred),
-            this, &ClientSocket::onErrorOccurred);
+    connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred),            this, &ClientSocket::onErrorOccurred);
 }
 
 ClientSocket::~ClientSocket() {}
@@ -115,7 +113,13 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
             emit loginError();
         }
 
-    } else {
+    } else if (type == "allUsers"){
+        // qDebug() << data;
+        QJsonObject userinfo = response["userinfo"].toObject();
+        emit fetchAllUserInfo(userinfo);
+    }
+
+    else {
         qWarning() << "Unknown response type:" << type;
     }
 }

@@ -10,6 +10,7 @@
 #include <QToolButton>
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
+#include <QJsonArray>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -40,6 +41,7 @@ private slots:
     void onEyePen();
     void editUserInfo(QPushButton *penButton);
     void displayInvalidPasswordEmail();
+    void displayAllUserInfo(const QJsonObject &object);
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;

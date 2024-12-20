@@ -16,6 +16,7 @@ public:
     bool static isEmailExists(QString &email);
     void static saveUserInfo(const QJsonObject &userInfo);
     QJsonObject static getUserInfo(const QString &email);
+    QJsonObject static getAllUserInfo(const QString &email);
 
 protected:
 

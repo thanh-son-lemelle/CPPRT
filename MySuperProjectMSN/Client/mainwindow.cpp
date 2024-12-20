@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow),
@@ -31,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(clientSocket, &ClientSocket::loginSuccess, this, &MainWindow::connectButtonToChatInterface);
     connect(clientSocket, &ClientSocket::loginError, this, &MainWindow::displayInvalidPasswordEmail);
     connect(clientSocket, &ClientSocket::registrationSuccess, this, &MainWindow::connectButtonToChatInterface);
+    connect(clientSocket, &ClientSocket::fetchAllUserInfo, this, &MainWindow::displayAllUserInfo);
     clientSocket->connectToServer("127.0.0.1", 2512);
 
     // Display message chat from bottom of conversation frame
@@ -113,8 +113,8 @@ void MainWindow::connectButtonToPage(QAbstractButton *button, int pageIndex)
 void MainWindow::connectButtonToChatInterface()
 {
     ui->WarningLogin->setVisible(false);
-    ui->EmailEdit->text() = "";
-    ui->PasswordEdit->text() = "";
+    ui->EmailEdit->clear();
+    ui->PasswordEdit->clear();
     ui->stackedWidget->setCurrentIndex(2);
     // Display user name on chat interface
     ui->UserPseudo->setText(clientSocket->getUserName());
@@ -307,3 +307,52 @@ void MainWindow::editUserInfo(QPushButton *penButton)
 void MainWindow::displayInvalidPasswordEmail(){
     ui->WarningLogin->setVisible(true);
 }
+
+void MainWindow::displayAllUserInfo(const QJsonObject &object){
+    qDebug() << "test1 : " << object;
+
+    if (!object.contains("filteredUsers") || !object["filteredUsers"].isArray()) {
+        qWarning() << "No 'filteredUsers' array found in the provided object.";
+        return;
+    }
+
+    QJsonArray usersArray = object["filteredUsers"].toArray();
+    QString userInfoText;
+    int displayedCount = 0;
+    int x = 120;
+    int y = 100;
+    int yOffset = 40;
+
+    for (const QJsonValue &value : usersArray) {
+        if (!value.isObject()) {
+            continue;
+        }
+
+        QJsonObject userObj = value.toObject();
+        QString email = userObj["email"].toString();
+        QString username = userObj["username"].toString();
+
+
+        QLabel *usernameLabel = new QLabel(this);
+        usernameLabel->setText(username);
+        usernameLabel->setGeometry(x, y, 300, 80);
+        usernameLabel->show();
+
+        QLabel *emailLabel = new QLabel(this);
+        emailLabel->setText(QString("Email: %1").arg(email));
+        emailLabel->setGeometry(x, y, 300, 100);
+        emailLabel->show();
+
+
+        y += yOffset;
+        displayedCount++;
+
+        // Arrêtez après les 3 premiers utilisateurs
+        if (displayedCount >= 3) {
+            break;
+        }
+    }
+
+
+}
+

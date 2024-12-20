@@ -35,6 +35,7 @@ signals:
     void loginError();
     void registrationSuccess();
     void registrationError();
+    void fetchAllUserInfo(QJsonObject userInfo);
     void userinformations();
 
 private slots:

@@ -172,3 +172,55 @@ QJsonObject ConnexionController::getUserInfo(const QString &email) {
     qWarning() << "User not found with email:" << email;
     return QJsonObject();
 }
+
+QJsonObject ConnexionController::getAllUserInfo(const QString &email) {
+    QString filePath = "../../../Server/data/userInfo.json";
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Unable to open file:" << filePath;
+        return QJsonObject();
+    }
+
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+    if (!doc.isObject()) {
+        qWarning() << "Invalid JSON format in file.";
+        return QJsonObject();
+    }
+
+    QJsonObject rootObj = doc.object();
+    if (!rootObj.contains("users") || !rootObj["users"].isArray()) {
+        qWarning() << "No 'users' array found in JSON.";
+        return QJsonObject();
+    }
+
+    QJsonArray usersArray = rootObj["users"].toArray();
+    QJsonArray filteredUsersArray;
+
+    for (const QJsonValue &value : usersArray) {
+        if (!value.isObject()) {
+            continue;
+        }
+
+        QJsonObject userObj = value.toObject();
+        if (userObj["email"].toString() != email) {
+            QJsonObject filteredUser;
+            filteredUser["email"] = userObj["email"].toString();
+            filteredUser["username"] = userObj["username"].toString();
+            filteredUsersArray.append(filteredUser);
+
+            qDebug() << "User added:" << filteredUser;
+        }
+    }
+
+    QJsonObject resultObj;
+    resultObj["filteredUsers"] = filteredUsersArray;
+
+    return resultObj;
+}
+
+
+
