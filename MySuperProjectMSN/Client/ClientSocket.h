@@ -20,6 +20,7 @@ public:
     void sendMessage(const QString &message);
     void sendLoginRequest(QString email, QString password);
     void sendRegistrationRequest(QString firstName, QString lastName, QString email, QString password, QString username);
+    void sendWizz();
     QString getUserEmail() const { return userEmail; }
     QString getUserName() const { return userName; }
     QString getUserFirstName() const { return userFirstName; }
@@ -38,6 +39,7 @@ signals:
     void registrationError();
     void fetchAllUserInfo(QJsonObject userInfo);
     void userinformations();
+    void receivedWizz();
 
 private slots:
     void onReadyRead();

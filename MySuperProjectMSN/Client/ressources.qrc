@@ -29,5 +29,6 @@
         <file>assets/img/mute.png</file>
         <file>assets/img/pen.png</file>
         <file>assets/img/warning.png</file>
+        <file>assets/sound/wizz.wav</file>
     </qresource>
 </RCC>

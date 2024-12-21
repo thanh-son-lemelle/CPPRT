@@ -148,13 +148,14 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
         {
             emit loginError();
         }
-
     } else if (type == "allUsers"){
         // qDebug() << data;
         QJsonObject userinfo = response["userinfo"].toObject();
         emit fetchAllUserInfo(userinfo);
+    } else if (type == "wizz"){
+        qDebug() << "YOU HAVE A WIZZ";
+        emit receivedWizz();
     }
-
     else {
         qWarning() << "Unknown response type:" << type;
     }
@@ -207,4 +208,12 @@ void ClientSocket::sendMessage(const QString &message)
             emit errorOccurred("Socket is not connected.");
         }
     }
+}
+
+void ClientSocket::sendWizz(){
+    QJsonObject request;
+    request["type"] = "wizz";
+    QJsonDocument doc(request);
+    socket->write(doc.toJson());
+    qDebug()<<"Wizz sent";
 }

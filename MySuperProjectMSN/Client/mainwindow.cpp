@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(clientSocket, &ClientSocket::loginError, this, &MainWindow::displayInvalidPasswordEmail);
     connect(clientSocket, &ClientSocket::registrationSuccess, this, &MainWindow::connectButtonToChatInterface);
     connect(clientSocket, &ClientSocket::fetchAllUserInfo, this, &MainWindow::displayAllUserInfo);
+    connect(clientSocket, &ClientSocket::receivedWizz, this, &MainWindow::playWizz);
+
     clientSocket->connectToServer("127.0.0.1", 2512);
 
     QStandardItemModel *model = new QStandardItemModel(this);
@@ -123,8 +125,20 @@ void MainWindow::connectButtonToChatInterface()
     displayInfoUserProfile();
 }
 
-void MainWindow::onWizzClicked()
+void MainWindow::playWizz()
 {
+    QSoundEffect *soundEffect = new QSoundEffect(this);
+    soundEffect->setSource(QUrl("qrc:/client/assets/sound/wizz.wav")); // Préfixe ajouté
+    soundEffect->setVolume(1.0);
+
+    // Vérification du chargement
+    if (soundEffect->status() == QSoundEffect::Error) {
+        qDebug() << "Erreur : impossible de charger le son.";
+        return;
+    }
+
+    soundEffect->play();
+
     QSequentialAnimationGroup *shakeAnimation = new QSequentialAnimationGroup(this);
     QPoint originalPos = ui->ChatPanel->pos();
 
@@ -147,6 +161,12 @@ void MainWindow::onWizzClicked()
     shakeAnimation->addAnimation(returnToOriginal);
 
     shakeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+
+    connect(soundEffect, &QSoundEffect::playingChanged, soundEffect, [soundEffect]() {
+        if (!soundEffect->isPlaying()) {
+            soundEffect->deleteLater();
+        }
+    });
 }
 
 void MainWindow::onLoginClicked()
@@ -363,7 +383,8 @@ void MainWindow::displayAllUserInfo(const QJsonObject &object){
             break;
         }
     }
-
-
 }
 
+void MainWindow::onWizzClicked(){
+    clientSocket->sendWizz();
+}

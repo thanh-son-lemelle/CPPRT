@@ -68,6 +68,12 @@ void Server::onReadyRead() {
                 socket->write(data);
             }
         }
+    } else if (requestType == "wizz") {
+        for (QTcpSocket *socket : clients){
+            if (socket != clientSocket) {
+                socket->write(data);
+            }
+        }
     } else {
         sendMessage(clientSocket, "Error: Unknown request type.");
     }

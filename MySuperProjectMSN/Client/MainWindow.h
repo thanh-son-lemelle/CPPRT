@@ -12,6 +12,8 @@
 #include <QSequentialAnimationGroup>
 #include <QStandardItemModel>
 #include <QJsonArray>
+#include <QSoundEffect>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,7 +35,7 @@ private slots:
     void onConnectionEstablished();
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);
-    void onWizzClicked();
+    void playWizz();
     void connectButtonToPage(QAbstractButton* button, int pageIndex);
     void onLoginClicked();
     void onSigninClicked();
@@ -43,6 +45,8 @@ private slots:
     void editUserInfo(QPushButton *penButton);
     void displayInvalidPasswordEmail();
     void displayAllUserInfo(const QJsonObject &object);
+    void onWizzClicked();
+
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;
