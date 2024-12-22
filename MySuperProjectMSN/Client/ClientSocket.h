@@ -27,6 +27,9 @@ public:
     QString getUserLastName() const { return userLastName; }
     QString getUserPassword() const { return userPassword; }
 
+    QString getMessageReceiver() {return messageReceiver; }
+    void setMessageReceiver(QString newMessageReceiver) {messageReceiver = newMessageReceiver; }
+
 signals:
     void messageReceived(const QJsonObject &message);
     void serverResponse(const QString &response);
@@ -39,7 +42,7 @@ signals:
     void registrationError();
     void fetchAllUserInfo(QJsonObject userInfo);
     void userinformations();
-    void receivedWizz();
+    void receivedWizz(const QString &sender, const QString &message);
 
 private slots:
     void onReadyRead();
@@ -61,6 +64,7 @@ private:
     QString userFirstName;
     QString userLastName;
     QString userPassword;
+    QString messageReceiver = "lucas@gmail.com";
 
     QTimer *reconnectTimer;
     QTimer *initialConnectionTimer;

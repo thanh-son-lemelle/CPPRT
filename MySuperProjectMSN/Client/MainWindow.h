@@ -35,7 +35,7 @@ private slots:
     void onConnectionEstablished();
     void onConnectionClosed();
     void onErrorOccurred(const QString &error);
-    void playWizz();
+    void playWizz(const QString &username, const QString &message);
     void connectButtonToPage(QAbstractButton* button, int pageIndex);
     void onLoginClicked();
     void onSigninClicked();
@@ -46,6 +46,7 @@ private slots:
     void displayInvalidPasswordEmail();
     void displayAllUserInfo(const QJsonObject &object);
     void onWizzClicked();
+    void onWizzReceived(const QString &sender, const QString &message);
 
 private:
     Ui::MainWindow *ui;

@@ -153,10 +153,12 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
         QJsonObject userinfo = response["userinfo"].toObject();
         emit fetchAllUserInfo(userinfo);
     } else if (type == "wizz"){
-        qDebug() << "YOU HAVE A WIZZ";
-        emit receivedWizz();
-    }
-    else {
+        QString username = response["username"].toString();
+        QString message = response["message"].toString();
+        qDebug() << "YOU HAVE A WIZZ from" << username
+                 << ":" << message;
+        emit receivedWizz(username, message);
+    } else {
         qWarning() << "Unknown response type:" << type;
     }
 }
@@ -197,6 +199,8 @@ void ClientSocket::sendMessage(const QString &message)
             request["type"] = "message";
             request["username"] = getUserName();
             request["message"] = message;
+            request["sender"] = getUserEmail();
+            request["receiver"] = getMessageReceiver();
 
             QJsonDocument doc(request);
             socket->write(doc.toJson());
@@ -213,6 +217,10 @@ void ClientSocket::sendMessage(const QString &message)
 void ClientSocket::sendWizz(){
     QJsonObject request;
     request["type"] = "wizz";
+    request["username"] = getUserName();
+    request["message"] = "You received a Wizz !";
+    request["sender"] = getUserEmail();
+    request["receiver"] = getMessageReceiver();
     QJsonDocument doc(request);
     socket->write(doc.toJson());
     qDebug()<<"Wizz sent";

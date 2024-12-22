@@ -125,17 +125,17 @@ void MainWindow::connectButtonToChatInterface()
     displayInfoUserProfile();
 }
 
-void MainWindow::playWizz()
+void MainWindow::playWizz(const QString &username, const QString &message)
 {
-    QSoundEffect *soundEffect = new QSoundEffect(this);
-    soundEffect->setSource(QUrl("qrc:/client/assets/sound/wizz.wav")); // Préfixe ajouté
-    soundEffect->setVolume(1.0);
+    QString fullMessage = username + "\n" + message;
+    QStandardItem *receivedItem = createMessageItem(fullMessage, false);
+    QStandardItemModel *model = qobject_cast<QStandardItemModel *>(ui->ConversationList->model());
+    model->appendRow(receivedItem);
+    ui->ConversationList->scrollToBottom();
 
-    // Vérification du chargement
-    if (soundEffect->status() == QSoundEffect::Error) {
-        qDebug() << "Erreur : impossible de charger le son.";
-        return;
-    }
+    QSoundEffect *soundEffect = new QSoundEffect(this);
+    soundEffect->setSource(QUrl("qrc:/client/assets/sound/wizz.wav"));
+    soundEffect->setVolume(1.0);
 
     soundEffect->play();
 
@@ -168,6 +168,7 @@ void MainWindow::playWizz()
         }
     });
 }
+
 
 void MainWindow::onLoginClicked()
 {
@@ -387,4 +388,9 @@ void MainWindow::displayAllUserInfo(const QJsonObject &object){
 
 void MainWindow::onWizzClicked(){
     clientSocket->sendWizz();
+}
+
+void MainWindow::onWizzReceived(const QString &sender, const QString &message)
+{
+    playWizz(sender, message);
 }
