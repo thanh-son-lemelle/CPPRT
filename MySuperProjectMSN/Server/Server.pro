@@ -9,12 +9,12 @@ TEMPLATE = app
 TARGET = Serveur
 
 SOURCES += main.cpp \
-    Server.cpp \
-    ConnexionController.cpp
+    DataController.cpp \
+    Server.cpp
 
 HEADERS += \
-    Server.h \
-    ConnexionController.h
+    DataController.h \
+    Server.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

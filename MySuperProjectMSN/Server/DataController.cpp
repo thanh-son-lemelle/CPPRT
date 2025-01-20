@@ -1,15 +1,15 @@
 #include <QDebug>
-#include "ConnexionController.h"
+#include "DataController.h"
 #include <QFileInfo>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
 
-ConnexionController::ConnexionController(QObject *parent) :QObject(parent) {
+DataController::DataController(QObject *parent) :QObject(parent) {
 
 }
 
-bool ConnexionController::validateCredentials(const QString& email, const QString& password) {
+bool DataController::validateCredentials(const QString& email, const QString& password) {
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
 
@@ -54,7 +54,7 @@ bool ConnexionController::validateCredentials(const QString& email, const QStrin
     return false;
 }
 
-bool ConnexionController::isEmailExists(QString &email){
+bool DataController::isEmailExists(QString &email){
 
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
@@ -91,7 +91,7 @@ bool ConnexionController::isEmailExists(QString &email){
     return false;
 }
 
-void ConnexionController::saveUserInfo(const QJsonObject &userInfo) {
+void DataController::saveUserInfo(const QJsonObject &userInfo) {
 
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
@@ -131,7 +131,7 @@ void ConnexionController::saveUserInfo(const QJsonObject &userInfo) {
     }
 }
 
-QJsonObject ConnexionController::getUserInfo(const QString &email) {
+QJsonObject DataController::getUserInfo(const QString &email) {
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
 
@@ -173,7 +173,7 @@ QJsonObject ConnexionController::getUserInfo(const QString &email) {
     return QJsonObject();
 }
 
-QJsonObject ConnexionController::getAllUserInfo(const QString &email) {
+QJsonObject DataController::getAllUserInfo(const QString &email) {
     QString filePath = "../../../Server/data/userInfo.json";
     QFile file(filePath);
 
@@ -222,5 +222,55 @@ QJsonObject ConnexionController::getAllUserInfo(const QString &email) {
     return resultObj;
 }
 
+void DataController::saveEvent(const QString &type, const QString &sender, const QString &receiver, const QString &message) {
+    QString filePath = "../../../Server/data/messageLog.json";
+    QFile file(filePath);
+
+    // Create file if it doesn't exist
+    if (!file.exists()) {
+        if (file.open(QIODevice::WriteOnly)) {
+            QJsonObject emptyObject;
+            QJsonDocument doc(emptyObject);
+            file.write(doc.toJson(QJsonDocument::Indented));
+            file.close();
+            qDebug() << "Creating file for message log...";
+        } else {
+            qWarning() << "Unable to create message log file:" << filePath;
+            return;
+        }
+    }
+
+    // Open the file for reading and updating
+    if (file.open(QIODevice::ReadWrite)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        QJsonArray eventsArray;
+
+        if (doc.isObject() && doc.object().contains("events")) {
+            eventsArray = doc.object()["events"].toArray();
+        }
+
+        // Create a new event object
+        QJsonObject eventObject;
+        eventObject["type"] = type;
+        eventObject["sender"] = sender;
+        eventObject["receiver"] = receiver;
+        eventObject["message"] = message;
+        eventObject["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODate);
+
+        eventsArray.append(eventObject);
+
+        // Update the JSON document
+        QJsonObject root;
+        root["events"] = eventsArray;
+        QJsonDocument updatedDoc(root);
+        file.resize(0);
+        file.write(updatedDoc.toJson(QJsonDocument::Indented));
+        file.close();
+
+        qDebug() << "Event saved successfully!";
+    } else {
+        qWarning() << "Unable to open file for reading and writing:" << filePath;
+    }
+}
 
 

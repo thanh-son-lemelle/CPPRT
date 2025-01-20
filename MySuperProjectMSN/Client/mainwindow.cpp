@@ -82,9 +82,16 @@ void MainWindow::onMessageReceived(const QJsonObject &object)
 
     QString fullMessage = username + "\n" + message;
     QStandardItem *receivedItem = createMessageItem(fullMessage, false);
+    receivedItem->setFlags(receivedItem->flags() & ~Qt::ItemIsEnabled); // Désactiver l'élément
+
     QStandardItemModel *model = qobject_cast<QStandardItemModel *>(ui->ConversationList->model());
     model->appendRow(receivedItem);
-
+    ui->ConversationList->setStyleSheet(
+        "QListView::item {"
+        "    border: none;"
+        "    padding: 5px;"
+        "}"
+        );
     ui->ConversationList->scrollToBottom();
 }
 

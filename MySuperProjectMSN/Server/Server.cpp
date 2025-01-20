@@ -1,4 +1,4 @@
-#include "ConnexionController.h"
+#include "DataController.h"
 #include "server.h"
 #include <QDebug>
 
@@ -41,10 +41,10 @@ void Server::onReadyRead() {
         QString email = request["email"].toString();
             qDebug() << "Register" << email;
 
-        if (ConnexionController::isEmailExists(email)) {
+        if (DataController::isEmailExists(email)) {
             sendRegistrationResponse(clientSocket, false, "Email already exists.");
         } else {
-            ConnexionController::saveUserInfo(request);
+            DataController::saveUserInfo(request);
             sendRegistrationResponse(clientSocket, true, "Registration successful.");
         }
 
@@ -53,23 +53,26 @@ void Server::onReadyRead() {
         QString password = request["password"].toString();
         qDebug() << "Login" << email << password;
 
-        if (ConnexionController::validateCredentials(email, password)) {
-            QJsonObject userInfo = ConnexionController::getUserInfo(email);
+        if (DataController::validateCredentials(email, password)) {
+            QJsonObject userInfo = DataController::getUserInfo(email);
             sendLoginResponse(clientSocket, true, "Login successful.", userInfo);
-            QJsonObject allUsersEmailUsername = ConnexionController::getAllUserInfo(email);
+            QJsonObject allUsersEmailUsername = DataController::getAllUserInfo(email);
             sendAllUsersResponse(clientSocket, "Recupération ok.", allUsersEmailUsername);
         } else {
             sendLoginResponse(clientSocket, false, "Invalid credentials.", QJsonObject());
         }
 
-    } else if (requestType == "message") {
-        for (QTcpSocket *socket : clients){
-            if (socket != clientSocket) {
-                socket->write(data);
-            }
-        }
-    } else if (requestType == "wizz") {
-        for (QTcpSocket *socket : clients){
+    } else if (requestType == "message" || requestType == "wizz") {
+        QString type = request["type"].toString();
+        QString sender = request["sender"].toString();
+        QString receiver = request["receiver"].toString();
+        QString message = request["message"].toString();
+
+        // Save to DataController
+        DataController::saveEvent(type, sender, receiver, message);
+
+        // Forward to other clients
+        for (QTcpSocket *socket : clients) {
             if (socket != clientSocket) {
                 socket->write(data);
             }
