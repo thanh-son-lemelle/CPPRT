@@ -321,7 +321,7 @@ void MainWindow::displayAllUserInfo(const QJsonObject &object){
     int displayedCount = 0;
     int x = 120;
     int y = 100;
-    int yOffset = 40;
+    int yOffset = 55;
 
     for (const QJsonValue &value : usersArray) {
         if (!value.isObject()) {
@@ -332,23 +332,29 @@ void MainWindow::displayAllUserInfo(const QJsonObject &object){
         QString email = userObj["email"].toString();
         QString username = userObj["username"].toString();
 
+        QToolButton *profileButton = new QToolButton(this);
+        QIcon profileIcon("../../../Client/assets/img/profileLogo.png");
+        profileButton->setIcon(profileIcon);
+        profileButton->setIconSize(QSize(30, 30));
+        profileButton->setGeometry(x-50, y+35, 30, 30);
+        profileButton->setStyleSheet("background-color: transparent;");
+        profileButton->show();
 
         QLabel *usernameLabel = new QLabel(this);
         usernameLabel->setText(username);
+        usernameLabel->setStyleSheet("font-size: 14px; color: #0677E8; font-weight: 600");
         usernameLabel->setGeometry(x, y, 300, 80);
         usernameLabel->show();
 
         QLabel *emailLabel = new QLabel(this);
         emailLabel->setText(QString("Email: %1").arg(email));
-        emailLabel->setGeometry(x, y, 300, 100);
+        emailLabel->setGeometry(x, y, 300, 110);
         emailLabel->show();
-
 
         y += yOffset;
         displayedCount++;
 
-        // Arrêtez après les 3 premiers utilisateurs
-        if (displayedCount >= 3) {
+        if (displayedCount >= 4) {
             break;
         }
     }
