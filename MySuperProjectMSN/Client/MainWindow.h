@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include "ClientSocket.h"
 #include "QHBoxLayout"
-
 #include <QStackedWidget>
 #include <QPushButton>
 #include <QToolButton>
@@ -47,7 +46,7 @@ private slots:
     void displayAllUserInfo(const QJsonObject &object);
     void onWizzClicked();
     void onWizzReceived(const QString &sender, const QString &message);
-
+    
 private:
     Ui::MainWindow *ui;
     ClientSocket *clientSocket;

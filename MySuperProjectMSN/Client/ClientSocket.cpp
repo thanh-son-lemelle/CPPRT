@@ -29,20 +29,16 @@ void ClientSocket::connectToServer(const QString &host, quint16 port)
     hostAddress = host;
     hostPort = port;
     attemptReconnect = true;
-
-    qDebug() << "Starting initial connection attempts to server at" << host << "on port" << port;
     initialConnectionTimer->start();
 }
 
 void ClientSocket::attemptInitialConnection()
 {
-    qDebug() << "Attempting to connect to" << hostAddress << "on port" << hostPort;
     socket->abort();
     socket->connectToHost(hostAddress, hostPort);
 
     if (socket->waitForConnected(3000))
     {
-        qDebug() << "Connection established.";
         initialConnectionTimer->stop();
         emit connectionEstablished();
     }
@@ -60,11 +56,9 @@ void ClientSocket::onReadyRead()
 
 void ClientSocket::onDisconnected()
 {
-    qDebug() << "Socket disconnected from server.";
     emit connectionClosed();
     if (attemptReconnect)
     {
-        qDebug() << "Attempting to reconnect...";
         reconnectTimer->start();
     }
 }
@@ -81,13 +75,11 @@ void ClientSocket::onErrorOccurred(QAbstractSocket::SocketError socketError)
 // Attempt to reconnect to server if disconnected
 void ClientSocket::reconnectToServer()
 {
-    qDebug() << "Attempting to reconnect to" << hostAddress << "on port" << hostPort;
     socket->abort();
     socket->connectToHost(hostAddress, hostPort);
 
     if (socket->waitForConnected(3000))
     {
-        qDebug() << "Reconnection successful.";
         reconnectTimer->stop();
         emit connectionEstablished();
     }
@@ -102,7 +94,6 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
     QJsonDocument doc = QJsonDocument::fromJson(data);
     if (!doc.isObject())
     {
-        qWarning() << "Invalid JSON response from server.";
         return;
     }
 
@@ -135,13 +126,6 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
             userFirstName = userInfo["firstName"].toString();
             userLastName = userInfo["lastName"].toString();
             userPassword = userInfo["password"].toString();
-
-            qDebug() << "User Info:";
-            qDebug() << "Email:" << userEmail;
-            qDebug() << "lastName:" << userLastName;
-            qDebug() << "firstName:" << userFirstName;
-            qDebug() << "userName:" << userName;
-
             emit loginSuccess();
         }
         else
@@ -149,14 +133,11 @@ void ClientSocket::handleServerResponse(const QByteArray &data)
             emit loginError();
         }
     } else if (type == "allUsers"){
-        // qDebug() << data;
         QJsonObject userinfo = response["userinfo"].toObject();
         emit fetchAllUserInfo(userinfo);
     } else if (type == "wizz"){
         QString username = response["username"].toString();
         QString message = response["message"].toString();
-        qDebug() << "YOU HAVE A WIZZ from" << username
-                 << ":" << message;
         emit receivedWizz(username, message);
     } else {
         qWarning() << "Unknown response type:" << type;
@@ -218,10 +199,9 @@ void ClientSocket::sendWizz(){
     QJsonObject request;
     request["type"] = "wizz";
     request["username"] = getUserName();
-    request["message"] = "You received a Wizz !";
+    request["message"] = "Sent you a Wizz !";
     request["sender"] = getUserEmail();
     request["receiver"] = getMessageReceiver();
     QJsonDocument doc(request);
     socket->write(doc.toJson());
-    qDebug()<<"Wizz sent";
 }

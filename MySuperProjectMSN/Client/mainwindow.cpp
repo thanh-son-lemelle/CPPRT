@@ -52,7 +52,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     // Hide warning message for invalid password or email
     ui->WarningLogin->setVisible(false);
-
 }
 
 MainWindow::~MainWindow()
@@ -82,7 +81,7 @@ void MainWindow::onMessageReceived(const QJsonObject &object)
 
     QString fullMessage = username + "\n" + message;
     QStandardItem *receivedItem = createMessageItem(fullMessage, false);
-    receivedItem->setFlags(receivedItem->flags() & ~Qt::ItemIsEnabled); // Désactiver l'élément
+    receivedItem->setFlags(receivedItem->flags() & ~Qt::ItemIsEnabled);
 
     QStandardItemModel *model = qobject_cast<QStandardItemModel *>(ui->ConversationList->model());
     model->appendRow(receivedItem);
@@ -125,7 +124,6 @@ void MainWindow::connectButtonToChatInterface()
     ui->EmailEdit->clear();
     ui->PasswordEdit->clear();
     ui->stackedWidget->setCurrentIndex(2);
-    // Display user name on chat interface
     ui->UserPseudo->setText(clientSocket->getUserName());
 
     // Display user info on profile page
@@ -249,7 +247,6 @@ void MainWindow::onEyePasswordReleased(QToolButton *eyeButton)
     {
         ui->PasswordPlaceholderAccount->setEchoMode(QLineEdit::Password);
     }
-
 }
 
 // Show or hide password depending on the eyePassword button
@@ -336,10 +333,8 @@ void MainWindow::displayInvalidPasswordEmail(){
     ui->WarningLogin->setVisible(true);
 }
 
-//
 QStandardItem* MainWindow::createMessageItem(const QString &message, bool sent) {
     QStandardItem *item = new QStandardItem(message);
-
     if (sent) {
         item->setTextAlignment(Qt::AlignLeft);
     } else {
@@ -371,7 +366,6 @@ void MainWindow::displayAllUserInfo(const QJsonObject &object){
         QString email = userObj["email"].toString();
         QString username = userObj["username"].toString();
 
-
         QLabel *usernameLabel = new QLabel(this);
         usernameLabel->setText(username);
         usernameLabel->setGeometry(x, y, 300, 80);
@@ -382,11 +376,9 @@ void MainWindow::displayAllUserInfo(const QJsonObject &object){
         emailLabel->setGeometry(x, y, 300, 100);
         emailLabel->show();
 
-
         y += yOffset;
         displayedCount++;
 
-        // Arrêtez après les 3 premiers utilisateurs
         if (displayedCount >= 3) {
             break;
         }

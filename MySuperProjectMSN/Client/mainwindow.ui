@@ -31,7 +31,7 @@
 </string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="LogIn">
      <widget class="QWidget" name="SignUpPanel" native="true">
@@ -407,8 +407,7 @@ border-radius: 5px;</string>
        <property name="styleSheet">
         <string notr="true">border-radius: 5px;
 background-color: #372226;
-border: 1px solid #ee554d;
-display: none;</string>
+border: 1px solid #ee554d;</string>
        </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
